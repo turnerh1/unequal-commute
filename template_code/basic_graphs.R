@@ -6,7 +6,7 @@ library(broom)
 setwd("~/Classes/SPU/DAT/dat_4500/project/unequal-commute")
 
 ## read the geojson and convert to sf
-job_access_gap_sf <- geojson_sf( "../data/job_access_gap.geojson" )
+job_access_gap_sf <- geojson_sf( "data/job_access_gap.geojson" )
 
 # plot all four cities on one map
 # will take a bit to render

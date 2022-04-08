@@ -1,0 +1,10 @@
+col_name,definition
+type,indicates whether the data refers to the block groups with the highest spatial mismatch (bottom 10%) or all block groups
+pctasian,percentage of total population that is non-Hispanic Asian
+pctblack,percentage of total population that is non-Hispanic Black
+pcthispanic,percentage of total population that is Hispanic
+pctwhite,percentage of total population that is non-Hispanic white
+pctother,percentage of total population that is non-Hispanic all other race groups
+pctnonwhite,percentage of total population that is not non-Hispanic white
+total_pop,total population of block group
+cbsa_name,"Shortened name of metropolitan area (Baltimore, Nashville, Lansing, or Seattle)"

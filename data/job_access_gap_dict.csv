@@ -1,0 +1,9 @@
+col_name,definition
+GEOID,FIPS code for block group
+OverallJobAccess,Normalized measure of overall access to jobs for low wage job seekers
+lowwagelaborforce,Count of low wage labor force in block group from LODES data
+Access30Transit,Normalized measure of jobs accessible within 30 minutes via public transit at peak hours
+Access30Transit_ts,Normalized measure of jobs accessible within 30 minutes via public transit at third shift hours
+MSA,"Shortened name of metropolitan area (Baltimore, Nashville, Lansing, or Seattle)"
+spatialmismatch,Normalized measure of spatial mismatch between low wage job seekers and jobs
+geometry,Polygon geometry representing block group boundary

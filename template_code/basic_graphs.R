@@ -2,6 +2,9 @@ library(tidyverse)
 library(geojsonsf)
 library(broom)
 
+# set to your unequal-commute dir
+setwd("~/Classes/SPU/DAT/dat_4500/project/unequal-commute")
+
 ## read the geojson and convert to sf
 job_access_gap_sf <- geojson_sf( "../data/job_access_gap.geojson" )
 

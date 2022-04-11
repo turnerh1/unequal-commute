@@ -23,4 +23,4 @@ ggplot(job_access_gap_sf_sea) +
        subtitle = "Seattle, WA and Surrounding Areas")+
   theme(plot.title = element_text(hjust = 0.5, size=15)) +
   theme(plot.subtitle = element_text(hjust = 0.5, size=10))+
-  labs(fill = "Normalized Spatial Mismatch")
+  labs(fill = "Normalized\nSpatial\nMismatch")

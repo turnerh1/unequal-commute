@@ -24,7 +24,7 @@ household_size_data <- household_size_data %>%
 
 household_jobaccess <-left_join(household_size_data,job_access_gap, by = "T_GEOID") 
 household_jobaccess$T_GEOID<-as.numeric(as.character(household_jobaccess$T_GEOID))
-<<<<<<< HEAD
+
 household_jobaccess <-
   separate(household_jobaccess, col = NAME, into = c("Tract","County","State"), sep = ", ")
 
@@ -48,8 +48,6 @@ occupants_per_room_1.01_1.50 <- household_jobaccess %>%
 occupants_per_room_1.51_more <- household_jobaccess %>%
   filter(grepl("S2501_C01_008",variable))
 
-=======
-
 # total no earners
 no_earners <- num_earners_data %>%
   filter(grepl("B19121_002",variable))
@@ -63,7 +61,7 @@ three_earner <- num_earners_data %>%
   filter(grepl("B19121_005",variable))
 population <- num_earners_data %>%
   filter(grepl("B19121_001",variable))
->>>>>>> 427da9c61904a825b1b0554d8b57f47389dbfb18
+
 # choose colors: http://colorbrewer2.org/ 
 #colors and breaks
 mybreaks<-c(0,25,50,75,100)
@@ -71,15 +69,15 @@ my_colors <- c("white","#fcae91","#fb6a4a","#de2d26","#a50f15")
 
 
 # plot of single earner
-<<<<<<< HEAD
+
 occupants_per_room_1.51_more %>%
   filter(County == "King County") %>%
 ggplot() +
   geom_sf(aes(fill = estimate))
-=======
+
 ggplot(data = household_jobaccess) +
   geom_sf(aes(fill = estimate), size=0.00001)
->>>>>>> 427da9c61904a825b1b0554d8b57f47389dbfb18
+
   # scale_fill_gradientn(colors=my_colors,
   #                      na.value = "transparent",
   #                      breaks=mybreaks,

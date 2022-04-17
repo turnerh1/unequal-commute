@@ -43,12 +43,14 @@ other_languages <- language_at_home_data %>%
 
 # choose colors: http://colorbrewer2.org/ 
 #colors and breaks
-mybreaks<-c(1000,5000,7000,10000)
+mybreaks<-c(100,500,1000,2000)
 my_colors <- c("white","#fcae91","#fb6a4a","#de2d26","#a50f15")
 
+spanish_seattle <- spanish %>%
+  filter(grepl("Seattle",MSA))
 
 # plot of spanish speaking at home
-ggplot(spanish) +
+ggplot(spanish_seattle) +
   geom_sf(color="#C0C0C0",aes(fill = estimate), size=0.00001)+
   scale_fill_gradientn(colors=my_colors,
                        na.value = "transparent",

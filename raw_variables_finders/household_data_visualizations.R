@@ -20,7 +20,7 @@ job_access_gap <- cbind(job_access_gap,T_GEOID)
 household_size_data <- household_size_data %>%
   rename("T_GEOID" = "GEOID")
 
-# join to earners and job access data
+# household size and job access data
 
 household_jobaccess <-left_join(household_size_data,job_access_gap, by = "T_GEOID") 
 household_jobaccess$T_GEOID<-as.numeric(as.character(household_jobaccess$T_GEOID))
@@ -28,7 +28,7 @@ household_jobaccess$T_GEOID<-as.numeric(as.character(household_jobaccess$T_GEOID
 household_jobaccess <-
   separate(household_jobaccess, col = NAME, into = c("Tract","County","State"), sep = ", ")
 
-# same thing but for one earner, two earners, three or more earners:
+# filter by household conditions
 single_person_household <- household_jobaccess %>%
   filter(grepl("S2501_C01_002",variable))
 two_person_household <- household_jobaccess %>%

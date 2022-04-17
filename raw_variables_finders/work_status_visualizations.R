@@ -47,9 +47,9 @@ mean_hours_worked <- work_status_jobaccess %>%
 #Usual hours worked
 not_worked <- work_status_jobaccess %>%
   filter(grepl("S2303_C01_030",variable))
-hours_1-14_worked <- work_status_jobaccess %>%
+hours_1to14_worked <- work_status_jobaccess %>%
   filter(grepl("S2303_C01_023",variable))
-hours_15-34_worked <- work_status_jobaccess %>%
+hours_15to34_worked <- work_status_jobaccess %>%
   filter(grepl("S2303_C01_016",variable))
 hours_35_or_more_worked <- work_status_jobaccess %>%
   filter(grepl("S2303_C01_009",variable))

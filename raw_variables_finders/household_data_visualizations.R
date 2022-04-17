@@ -28,10 +28,6 @@ household_jobaccess$T_GEOID<-as.numeric(as.character(household_jobaccess$T_GEOID
 household_jobaccess <-
   separate(household_jobaccess, col = NAME, into = c("Tract","County","State"), sep = ", ")
 
-# # total no earners
-# no_earners <- num_earners_data %>%
-#   filter(grepl("B19121_002",variable))
-
 # same thing but for one earner, two earners, three or more earners:
 single_person_household <- household_jobaccess %>%
   filter(grepl("S2501_C01_002",variable))
@@ -48,27 +44,13 @@ occupants_per_room_1.01_1.50 <- household_jobaccess %>%
 occupants_per_room_1.51_more <- household_jobaccess %>%
   filter(grepl("S2501_C01_008",variable))
 
-# total no earners
-no_earners <- num_earners_data %>%
-  filter(grepl("B19121_002",variable))
-
-# same thing but for one earner, two earners, three or more earners:
-single_earner <- num_earners_data %>%
-  filter(grepl("B19121_003",variable))
-dual_earner <- num_earners_data %>%
-  filter(grepl("B19121_004",variable))
-three_earner <- num_earners_data %>%
-  filter(grepl("B19121_005",variable))
-population <- num_earners_data %>%
-  filter(grepl("B19121_001",variable))
-
 # choose colors: http://colorbrewer2.org/ 
 #colors and breaks
 mybreaks<-c(0,25,50,75,100)
 my_colors <- c("white","#fcae91","#fb6a4a","#de2d26","#a50f15")
 
 
-# plot of single earner
+# plot of occupants_per_room_1.51_more in King County
 
 occupants_per_room_1.51_more %>%
   filter(County == "King County") %>%

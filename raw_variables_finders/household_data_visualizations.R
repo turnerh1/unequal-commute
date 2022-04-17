@@ -46,26 +46,25 @@ occupants_per_room_1.51_more <- household_jobaccess %>%
 
 # choose colors: http://colorbrewer2.org/ 
 #colors and breaks
-mybreaks<-c(0,25,50,75,100)
+mybreaks<-c(100,200,300,400,500)
 my_colors <- c("white","#fcae91","#fb6a4a","#de2d26","#a50f15")
 
 
 # plot of occupants_per_room_1.51_more in King County
 
 occupants_per_room_1.51_more %>%
-  filter(County == "King County") %>%
+  # filter(County == "King County") %>%
 ggplot() +
   geom_sf(aes(fill = estimate))
 
 ggplot(data = household_jobaccess) +
   geom_sf(aes(fill = estimate), size=0.00001)
-
-  # scale_fill_gradientn(colors=my_colors,
-  #                      na.value = "transparent",
-  #                      breaks=mybreaks,
-  #                      labels = mybreaks)+
-  # labs(title="Household Size by Tract Group",
-  #      subtitle = "")+
-  # theme(plot.title = element_text(hjust = 0.5, size=15)) +
-  # theme(plot.subtitle = element_text(hjust = 0.5, size=10))+
-  # labs(fill = "estimate") 
+  scale_fill_gradientn(colors=my_colors,
+                       na.value = "transparent",
+                       breaks=mybreaks,
+                       labels = mybreaks)+
+  labs(title="Household Size by Tract Group",
+       subtitle = "")+
+  theme(plot.title = element_text(hjust = 0.5, size=15)) +
+  theme(plot.subtitle = element_text(hjust = 0.5, size=10))+
+  labs(fill = "estimate")

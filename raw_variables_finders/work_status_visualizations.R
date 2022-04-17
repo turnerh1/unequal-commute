@@ -44,12 +44,14 @@ mean_hours_worked <- work_status_jobaccess %>%
   filter(grepl("S2303_C01_031",variable)) %>%
   mutate(mean_hours = cut(estimate, breaks = mycutpoints, label = mylabels))
 
+mean_hours_worked$County <- str_remove_all(mean_hours_worked$County," County")
+
 #Usual hours worked
 not_worked <- work_status_jobaccess %>%
   filter(grepl("S2303_C01_030",variable))
-hours_1-14_worked <- work_status_jobaccess %>%
+hours_1to14_worked <- work_status_jobaccess %>%
   filter(grepl("S2303_C01_023",variable))
-hours_15-34_worked <- work_status_jobaccess %>%
+hours_15to34_worked <- work_status_jobaccess %>%
   filter(grepl("S2303_C01_016",variable))
 hours_35_or_more_worked <- work_status_jobaccess %>%
   filter(grepl("S2303_C01_009",variable))
@@ -68,3 +70,17 @@ labs(fill = "estimate")+
          axis.ticks = element_blank(),
          axis.title = element_blank())
 
+mean_hours_worked %>%
+  filter(County == "Whatcom"|County == "Skagit"|County == "Snohomish"|County == "King"|
+           County == "Pierce"|County == "Kitsap") %>%
+  ggplot() +
+  geom_sf(aes(fill = mean_hours), size=0.00001) +
+  scale_fill_manual("Hours worked per week", values = mycolors)+
+  labs(title="Mean Hours worked by Tract Group")+
+  theme(plot.title = element_text(hjust = 0.5, size=15)) +
+  theme(plot.subtitle = element_text(hjust = 0.5, size=10))+
+  labs(fill = "estimate")+
+  theme(panel.background = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank())

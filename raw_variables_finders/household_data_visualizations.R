@@ -28,6 +28,8 @@ household_jobaccess$T_GEOID<-as.numeric(as.character(household_jobaccess$T_GEOID
 household_jobaccess <-
   separate(household_jobaccess, col = NAME, into = c("Tract","County","State"), sep = ", ")
 
+household_jobaccess$County <- str_remove_all(household_jobaccess$County," County")
+
 # filter by household conditions
 single_person_household <- household_jobaccess %>%
   filter(grepl("S2501_C01_002",variable))
@@ -46,7 +48,7 @@ occupants_per_room_1.51_more <- household_jobaccess %>%
 
 # choose colors: http://colorbrewer2.org/ 
 #colors and breaks
-mybreaks<-c(100,200,300,400,500)
+mybreaks<-c(10,20,30,40,50)
 my_colors <- c("white","#fcae91","#fb6a4a","#de2d26","#a50f15")
 
 
@@ -57,14 +59,12 @@ occupants_per_room_1.51_more %>%
 ggplot() +
   geom_sf(aes(fill = estimate))
 
-ggplot(data = household_jobaccess) +
-  geom_sf(aes(fill = estimate), size=0.00001)
-  scale_fill_gradientn(colors=my_colors,
-                       na.value = "transparent",
-                       breaks=mybreaks,
-                       labels = mybreaks)+
+occupants_per_room_1.01_1.50 %>%
+  filter(!is.na(spatialmismatch))%>%
+ggplot() +
+  geom_sf(aes(fill = estimate), size=0.00001) +
   labs(title="Household Size by Tract Group",
-       subtitle = "")+
+       subtitle = "1.01 to 1.50 Occupants per Room")+
   theme(plot.title = element_text(hjust = 0.5, size=15)) +
   theme(plot.subtitle = element_text(hjust = 0.5, size=10))+
   labs(fill = "estimate")

@@ -36,7 +36,9 @@ my_colors <- c("white","#fcae91","#fb6a4a","#de2d26","#a50f15")
 
 
 # plot of now married
-ggplot(married_not_sep) +
+married_not_sep%>%
+  filter(!is.na(spatialmismatch))%>%
+ggplot() +
   geom_sf(color="#C0C0C0",aes(fill = estimate), size=0.00001)+
   scale_fill_gradientn(colors=my_colors,
                        na.value = "transparent",

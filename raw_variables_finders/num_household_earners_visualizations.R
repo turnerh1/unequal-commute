@@ -45,14 +45,16 @@ my_colors <- c("white","#fcae91","#fb6a4a","#de2d26","#a50f15")
 
 
 # plot of single earner
-ggplot(single_earner) +
+three_earner %>%
+filter(!is.na(spatialmismatch)) %>%
+ggplot() +
   geom_sf(color="#C0C0C0",aes(fill = estimate), size=0.00001)+
   scale_fill_gradientn(colors=my_colors,
                        na.value = "transparent",
                        breaks=mybreaks,
                        labels = mybreaks)+
-  labs(title="Median Family Income in Seattle by Tract Group",
-       subtitle = "For single earner households")+
+  # labs(title="Median Family Income in Seattle by Tract Group",
+  #      subtitle = "For single earner households")+
   theme(plot.title = element_text(hjust = 0.5, size=15)) +
   theme(plot.subtitle = element_text(hjust = 0.5, size=10))+
-  labs(fill = "estimate") 
+  labs(fill = "estimate")

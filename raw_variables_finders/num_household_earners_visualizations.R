@@ -51,7 +51,7 @@ ggplot(single_earner) +
                        na.value = "transparent",
                        breaks=mybreaks,
                        labels = mybreaks)+
-  labs(title="Median Family income in Seattle by Tract Group",
+  labs(title="Median Family Income in Seattle by Tract Group",
        subtitle = "For single earner households")+
   theme(plot.title = element_text(hjust = 0.5, size=15)) +
   theme(plot.subtitle = element_text(hjust = 0.5, size=10))+

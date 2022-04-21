@@ -2,11 +2,11 @@
 # units of measurement:
 
 #  https://data.census.gov/cedsci/
-# marital status (S1201) - count of people (15+ age)
-# language (S1601)- number of people who speak per group (5+ age)
-# num of household earners (B19121) - number of earners per family
-# household data/occupancy char. (S2501) - by number of occupied housing units
-# work status (S2303) - count of people (16+ age)
+# marital status (S1201) - count of people (15+ age) var: 'est_population_15+'
+# language (S1601)- number of people who speak per group (5+ age) var: 'est_population_5+'
+# num of household earners (B19121) - number of earners per family var: 'est_num_families'
+# household data/occupancy char. (S2501) - by number of occupied housing units var: 'est_housing_units_total'
+# work status (S2303) - count of people (16+ age) var: 'est_population_16to64'
 
 # tidying on each table includes:
 # select relevant vars, pivot wider on two columns, create meaningful names

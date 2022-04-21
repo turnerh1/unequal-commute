@@ -25,6 +25,11 @@ num_earners_data <- num_earners_data %>%
 num_earners_data <-left_join(num_earners_data,job_access_gap, by = "T_GEOID") 
 num_earners_data$T_GEOID<-as.numeric(num_earners_data$T_GEOID)
 
+#earners single sheet
+earners <- num_earners_data %>%
+  filter(grepl("B19121_002|B19121_003|B19121_004|B19121_005|B19121_001",variable))%>%
+  pivot_wider(names_from = variable, values_from = estimate)
+
 # total no earners
 no_earners <- num_earners_data %>%
   filter(grepl("B19121_002",variable))

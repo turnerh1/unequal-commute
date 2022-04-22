@@ -19,3 +19,7 @@ for( i in c(1:5) )
 
 num_earners_data <- get_acs(geography = "tract", variables=num_earners_variables , state = "WA", geometry = T) %>% 
   left_join(acs5_vars, by="variable") 
+
+#no geometry
+num_earners_data_no_geo <- get_acs(geography = "tract", variables=num_earners_variables , state = "WA", geometry = F) %>% 
+  left_join(acs5_vars, by="variable") 

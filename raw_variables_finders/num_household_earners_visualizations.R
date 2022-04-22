@@ -3,7 +3,7 @@ library(tidyverse)
 options(tigris_use_cache = TRUE)
 
 # load job_access_gap, but leave out the geometries
-job_access_gap <- read_csv("job_access_gap.csv", 
+job_access_gap <- read_csv("job_access_gap.csv",
                            col_types = cols(geometry = col_skip()))
 #convert job_access_gap data to have census tracts
 
@@ -22,13 +22,12 @@ num_earners_data <- num_earners_data %>%
 
 # join to earners and job access data
 
-num_earners_data <-left_join(num_earners_data,job_access_gap, by = "T_GEOID") 
+# num_earners_data <-left_join(num_earners_data,job_access_gap, by = "T_GEOID") 
 num_earners_data$T_GEOID<-as.numeric(num_earners_data$T_GEOID)
 
-#earners single sheet
-earners <- num_earners_data %>%
-  filter(grepl("B19121_002|B19121_003|B19121_004|B19121_005|B19121_001",variable))%>%
-  pivot_wider(names_from = variable, values_from = estimate)
+#population
+population <- num_earners_data %>%
+  filter(grepl("B19121_001",variable))
 
 # total no earners
 no_earners <- num_earners_data %>%
@@ -41,8 +40,7 @@ dual_earner <- num_earners_data %>%
   filter(grepl("B19121_004",variable))
 three_earner <- num_earners_data %>%
   filter(grepl("B19121_005",variable))
-population <- num_earners_data %>%
-  filter(grepl("B19121_001",variable))
+
 # choose colors: http://colorbrewer2.org/ 
 #colors and breaks
 mybreaks<-c(0,25,50,75,100)

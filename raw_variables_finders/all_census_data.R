@@ -15,15 +15,14 @@ library(tidycensus)
 library(tidyverse)
 library(stringr)
 
+use_year <- 2019
+
 #household / occupancy characteristics data
 household_size_table <- "S2501"
-use_year <- 2019
 
 household_size_vars <- load_variables(year = use_year, dataset = "acs5/subject", cache = TRUE) %>% 
   rename("variable"="name") %>%  # rename variable code to be able to join 
   filter( str_detect( variable, household_size_table))
-
-household_wanted_vars<-c("S2501_C01_001","S2501_C01_002")
 
 household_size_data <- get_acs(geography = "tract", table = household_size_table, state = "WA", geometry = F, cache_table = TRUE) %>% 
   left_join( household_size_vars, by="variable") %>%
@@ -39,7 +38,6 @@ household_size_data <- get_acs(geography = "tract", table = household_size_table
 
 #marital status data
 marital_status_table <- "S1201"
-use_year <- 2019
 
 marital_status_vars <- 
   load_variables(year = use_year, dataset = "acs5/subject", cache = TRUE) %>% 
@@ -50,7 +48,7 @@ marital_status_data <- get_acs(geography = "tract", table = marital_status_table
   left_join(marital_status_vars,by="variable") %>%
   select(-c(NAME,label,concept)) %>%
   filter(variable == "S1201_C01_001" | variable == "S1201_C02_001"| variable == "S1201_C03_001"| variable == "S1201_C04_001"|
-           variable == "S1201_C05_001"|variable == "S1201_C06_001") %>%
+           variable == "S1201_C05_001" |variable == "S1201_C06_001") %>%
   pivot_wider(names_from = variable, values_from = c(estimate,moe)) %>%
   rename("est_population_15+"="estimate_S1201_C01_001","moe_population_15+"="moe_S1201_C01_001",
          "est_married"="estimate_S1201_C02_001","moe_married"="moe_S1201_C02_001",
@@ -63,7 +61,6 @@ all_census_data <- left_join(household_size_data,marital_status_data,by="GEOID")
 
 #num household earners data
 num_earners_prefix <- "B19121_"
-use_year <- 2019
 
 acs5_vars <- load_variables(year = use_year, dataset = "acs5", cache = TRUE) %>% 
   rename("variable"="name") # rename variable code to be able to join
@@ -90,7 +87,6 @@ all_census_data <- left_join(all_census_data,num_earners_data,by="GEOID")
 
 #language at home data
 language_at_home_table <- "S1601"
-use_year = 2019
 
 acs5_vars <- load_variables(year = use_year, dataset = "acs5/subject", cache = TRUE) %>% 
   rename("variable"="name") # rename variable code to be able to join
@@ -117,7 +113,6 @@ all_census_data <- left_join(all_census_data,language_at_home_data,by="GEOID")
 
 # work status data
 work_status_table <- "S2303"
-use_year <- 2019
 
 work_status_vars <- 
   load_variables(year = use_year, dataset = "acs5/subject", cache = TRUE) %>% 

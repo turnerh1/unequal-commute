@@ -2,9 +2,10 @@ library(tidycensus)
 library(tidyverse)
 options(tigris_use_cache = TRUE)
 
-# load job_access_gap, but leave out the geometries
-job_access_gap <- read_csv("job_access_gap.csv", 
+# # load job_access_gap, but leave out the geometries
+job_access_gap <- read_csv("job_access_gap.csv",
                            col_types = cols(geometry = col_skip()))
+
 #convert job_access_gap data to have census tracts
 
 job_access_gap <- job_access_gap %>%
@@ -17,34 +18,24 @@ job_access_gap <- cbind(job_access_gap,T_GEOID)
 
 # import household size data by running file 'household_data.R"
 
-household_size_data <- household_size_data %>%
-  rename("T_GEOID" = "GEOID")
+  household_size_data <- household_size_data %>%
+    rename("T_GEOID" = "GEOID")
+  
+  household_geometry <- household_geometry %>%
+    rename("T_GEOID" = "GEOID")
 
-# household size and job access data
 
-household_jobaccess <-left_join(household_size_data,job_access_gap, by = "T_GEOID") 
-household_jobaccess$T_GEOID<-as.numeric(as.character(household_jobaccess$T_GEOID))
-
-household_jobaccess <-
+household_size <-
   separate(household_jobaccess, col = NAME, into = c("Tract","County","State"), sep = ", ")
 
 household_jobaccess$County <- str_remove_all(household_jobaccess$County," County")
 
-# filter by household conditions
-single_person_household <- household_jobaccess %>%
-  filter(grepl("S2501_C01_002",variable))
-two_person_household <- household_jobaccess %>%
-  filter(grepl("S2501_C01_003",variable))
-three_person_household <- household_jobaccess %>%
-  filter(grepl("S2501_C01_004",variable))
-four_person_household <- household_jobaccess %>%
-  filter(grepl("S2501_C01_005",variable))
-occupants_per_room_1_or_less <- household_jobaccess %>%
-  filter(grepl("S2501_C01_006",variable))
-occupants_per_room_1.01_1.50 <- household_jobaccess %>%
-  filter(grepl("S2501_C01_007",variable))
-occupants_per_room_1.51_more <- household_jobaccess %>%
-  filter(grepl("S2501_C01_008",variable))
+household_size_data$est_housing_size_1lessoccup_prop <- household_size_data$est_housing_size_1lessoccup/household_size_data$est_housing_units_total
+household_size_data$est_housing_size_1.5lessoccup_prop <- household_size_data$est_housing_size_1.5lessoccup/household_size_data$est_housing_units_total
+household_size_data$est_housing_size_1.51moreoccup_prop <- household_size_data$est_housing_size_1.51moreoccup/household_size_data$est_housing_units_total
+
+#Joing household and geometry
+household_size <-left_join(household_size_data,household_geometry, by = "T_GEOID")
 
 # choose colors: http://colorbrewer2.org/ 
 #colors and breaks
@@ -54,10 +45,10 @@ my_colors <- c("white","#fcae91","#fb6a4a","#de2d26","#a50f15")
 
 # plot of occupants_per_room_1.51_more in King County
 
-occupants_per_room_1.51_more %>%
+household_size %>%
   # filter(County == "King County") %>%
 ggplot() +
-  geom_sf(aes(fill = estimate))
+  geom_sf(aes(fill = est_housing_size_1.5lessoccup_prop, geometry = geometry))
 
 occupants_per_room_1.01_1.50 %>%
   filter(!is.na(spatialmismatch))%>%

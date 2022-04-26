@@ -3,39 +3,39 @@ library(tidyverse)
 options(tigris_use_cache = TRUE)
 
 # # load job_access_gap, but leave out the geometries
-job_access_gap <- read_csv("job_access_gap.csv",
-                           col_types = cols(geometry = col_skip()))
-
-#convert job_access_gap data to have census tracts
-
-job_access_gap <- job_access_gap %>%
-  rename("BG_GEOID"="GEOID")
-job_access_gap$BG_GEOID<-as.character(job_access_gap$BG_GEOID)
-
-T_GEOID<-substr(job_access_gap$BG_GEOID,1,11)
-
-job_access_gap <- cbind(job_access_gap,T_GEOID)
-
-# import household size data by running file 'household_data.R"
-
+# job_access_gap <- read_csv("job_access_gap.csv",
+#                            col_types = cols(geometry = col_skip()))
+# 
+# #convert job_access_gap data to have census tracts
+# 
+# job_access_gap <- job_access_gap %>%
+#   rename("BG_GEOID"="GEOID")
+# job_access_gap$BG_GEOID<-as.character(job_access_gap$BG_GEOID)
+# 
+# T_GEOID<-substr(job_access_gap$BG_GEOID,1,11)
+# 
+# job_access_gap <- cbind(job_access_gap,T_GEOID)
+# 
+# # import household size data by running file 'household_data.R"
+# 
   household_size_data <- household_size_data %>%
     rename("T_GEOID" = "GEOID")
-  
+
   household_geometry <- household_geometry %>%
     rename("T_GEOID" = "GEOID")
+# 
 
+household_size_data <-
+  separate(household_size_data, col = NAME, into = c("Tract","County","State"), sep = ", ")
 
-household_size <-
-  separate(household_jobaccess, col = NAME, into = c("Tract","County","State"), sep = ", ")
-
-household_jobaccess$County <- str_remove_all(household_jobaccess$County," County")
+household_size_data$County <- str_remove_all(household_size_data$County," County")
 
 household_size_data$est_housing_size_1lessoccup_prop <- household_size_data$est_housing_size_1lessoccup/household_size_data$est_housing_units_total
 household_size_data$est_housing_size_1.5lessoccup_prop <- household_size_data$est_housing_size_1.5lessoccup/household_size_data$est_housing_units_total
 household_size_data$est_housing_size_1.51moreoccup_prop <- household_size_data$est_housing_size_1.51moreoccup/household_size_data$est_housing_units_total
 
-#Joing household and geometry
-household_size <-left_join(household_size_data,household_geometry, by = "T_GEOID")
+#Joining household and geometry
+household_size <-right_join(household_geometry, household_size_data, by = "T_GEOID")
 
 # choose colors: http://colorbrewer2.org/ 
 #colors and breaks

@@ -119,17 +119,33 @@ work_status_vars <-
   rename("variable"="name") %>%  # rename variable code to be able to join
   filter( str_detect( variable, work_status_table) )
 
-work_status_data <- get_acs(geography = "tract", table = work_status_table, state = "WA", geometry = T, cache_table = T ) %>% 
+work_status_data <- get_acs(geography = "tract", table = work_status_table, state = "WA", geometry = F, cache_table = T ) %>% 
   left_join(work_status_vars,by="variable") %>%
   select(-c(NAME,label,concept)) %>%
   filter(variable == "S2303_C01_001" | variable == "S2303_C01_031"| variable == "S2303_C01_030"| variable == "S2303_C01_023"|
            variable == "S2303_C01_016"|variable == "S2303_C01_009") %>%
-  pivot_wider(names_from = variable, values_from = c(estimate,moe)) %>%
-  rename("est_population_16to64"="estimate_S2303_C01_001","moe_population_16-64"="moe_S2303_C01_001",
-         "est_mean_hrsworked"="estimate_S2303_C01_031","moe_mean_hrsworked"="moe_S2303_C01_031",
-         "est_not_worked"="estimate_S2303_C01_030","moe_not_worked"="moe_S2303_C01_030",
-         "est_worked_1to14hrs"="estimate_S2303_C01_023","moe_worked_1to14hrs"="moe_S2303_C01_023",
-         "est_worked_15to34hrs"="estimate_S2303_C01_016","moe_worked_15to34hrs"="moe_S2303_C01_016",
-         "est_worked_35+hrs"="estimate_S2303_C01_009","moe_worked_35+hrs"="moe_S2303_C01_009")
+  pivot_wider( names_from = variable, values_from = c(estimate,moe)) %>%
+  rename( "est_population_16to64"="estimate_S2303_C01_001",
+         "moe_population_16-64"="moe_S2303_C01_001",
+         "est_mean_hrsworked"="estimate_S2303_C01_031",
+         "moe_mean_hrsworked"="moe_S2303_C01_031",
+         "est_not_worked"="estimate_S2303_C01_030",
+         "moe_not_worked"="moe_S2303_C01_030",
+         "est_worked_1to14hrs"="estimate_S2303_C01_023",
+         "moe_worked_1to14hrs"="moe_S2303_C01_023",
+         "est_worked_15to34hrs"="estimate_S2303_C01_016",
+         "moe_worked_15to34hrs"="moe_S2303_C01_016",
+         "est_worked_35+hrs"="estimate_S2303_C01_009",
+         "moe_worked_35+hrs"="moe_S2303_C01_009")
+
 #join tables
 all_census_data <- left_join(all_census_data,work_status_data,by="GEOID")
+
+geography_data <-get_acs (geography = "tract", variables = "B19013_001", 
+                     state = "WA", geometry = T, cache_table = T) %>% 
+  select( "GEOID", "geometry")
+
+all_census_data <- left_join(all_census_data, geography_data, by="GEOID")
+
+
+

@@ -11,5 +11,6 @@ household_size_vars <- load_variables(year = use_year, dataset = "acs5/subject",
   rename("variable"="name") %>%  # rename variable code to be able to join 
   filter( str_detect( variable, household_size_table))
 
-household_size_data <- get_acs(geography = "tract", table = household_size_table, state = "WA", geometry = T, cache_table = TRUE) %>% 
-  left_join( household_size_vars, by="variable")
+household_geometry <- get_acs(geography = "tract", table = household_size_table, state = "WA", geometry = T, cache_table = TRUE) %>% 
+  left_join( household_size_vars, by="variable")%>%
+  select(GEOID, geometry)

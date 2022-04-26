@@ -50,12 +50,11 @@ household_size %>%
 ggplot() +
   geom_sf(aes(fill = est_housing_size_1.5lessoccup_prop, geometry = geometry))
 
-occupants_per_room_1.01_1.50 %>%
-  filter(!is.na(spatialmismatch))%>%
+household_size %>%
 ggplot() +
-  geom_sf(aes(fill = estimate), size=0.00001) +
+  geom_sf(aes(fill = est_housing_size_1.5lessoccup_prop, geometry = geometry), size=0.00001) +
   labs(title="Household Size by Tract Group",
        subtitle = "1.01 to 1.50 Occupants per Room")+
   theme(plot.title = element_text(hjust = 0.5, size=15)) +
   theme(plot.subtitle = element_text(hjust = 0.5, size=10))+
-  labs(fill = "estimate")
+  labs(fill = "Percentage of Occupied Housing")

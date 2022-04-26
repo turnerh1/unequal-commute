@@ -28,13 +28,16 @@ household_size_data <- get_acs(geography = "tract", table = household_size_table
   left_join( household_size_vars, by="variable") %>%
   select(-c(label,concept)) %>%
   filter(variable == "S2501_C01_001" | variable == "S2501_C01_002"| variable == "S2501_C01_003"| variable == "S2501_C01_004"|
-           variable == "S2501_C01_005") %>%
+           variable == "S2501_C01_005"|variable == "S2501_C01_006"|variable == "S2501_C01_007"|variable == "S2501_C01_008") %>%
   pivot_wider(names_from = variable, values_from = c(estimate,moe)) %>%
   rename("est_housing_units_total"="estimate_S2501_C01_001","moe_housing_units_total"="moe_S2501_C01_001",
          "est_housing_size_1p"="estimate_S2501_C01_002","moe_housing_size_1p"="moe_S2501_C01_002",
          "est_housing_size_2p"="estimate_S2501_C01_003","moe_housing_size_2p"="moe_S2501_C01_003",
          "est_housing_size_3p"="estimate_S2501_C01_004","moe_housing_size_3p"="moe_S2501_C01_004",
-         "est_housing_size_4p"="estimate_S2501_C01_005","moe_housing_size_4p"="moe_S2501_C01_005")
+         "est_housing_size_4p"="estimate_S2501_C01_005","moe_housing_size_4p"="moe_S2501_C01_005",
+         "est_housing_size_1lessoccup"="estimate_S2501_C01_006","moe_housing_size_1lessoccup"="moe_S2501_C01_006",
+         "est_housing_size_1.5lessoccup"="estimate_S2501_C01_007","moe_housing_size_1.5lessoccup"="moe_S2501_C01_007",
+         "est_housing_size_1.51moreoccup"="estimate_S2501_C01_008","moe_housing_size_1.51moreoccup"="moe_S2501_C01_008")
 
 #marital status data
 marital_status_table <- "S1201"

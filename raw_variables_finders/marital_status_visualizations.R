@@ -24,7 +24,7 @@ ggplot() +
   geom_sf(color="#C0C0C0",aes(fill = prop_married, geometry=geometry), size=0.00001)+
   scale_fill_gradientn(colors=my_colors,
                        na.value = "transparent")+
-  labs(title="Percent Married in Seattle by Tract Group",
+  labs(title="Percent Married in Washington by Tract Group",
        subtitle = "15+ in age")+
   theme(plot.title = element_text(hjust = 0.5, size=15)) +
   theme(plot.subtitle = element_text(hjust = 0.5, size=10))+

@@ -3,7 +3,7 @@
 
 #  https://data.census.gov/cedsci/
 # marital status (S1201) - count of people (15+ age) var: 'est_population_15+'
-# language (S1601)- number of people who speak per group (5+ age) var: 'est_population_5+'
+# language (B16004)- number of people who speak per group (5+ age) var: 'estimate_age5andolder'
 # num of household earners (B19121) - number of earners per family var: 'est_num_families'
 # household data/occupancy char. (S2501) - by number of occupied housing units var: 'est_housing_units_total'
 # work status (S2303) - count of people (16+ age) var: 'est_population_16to64'
@@ -92,27 +92,32 @@ num_earners_data <- get_acs(geography = search_geo, variables=num_earners_variab
 all_census_data <- left_join(all_census_data,num_earners_data,by="GEOID")
 
 #language at home data
-language_at_home_table <- "S1601"
-
-acs5_vars <- load_variables(year = search_year, dataset = "acs5/subject", cache = TRUE) %>% 
-  rename("variable"="name") # rename variable code to be able to join
-
-language_at_home_vars <- acs5_vars %>% 
-  filter( str_detect( acs5_vars$variable, language_at_home_table))
-
-language_at_home_data <- get_acs(geography = search_geo, table = language_at_home_table, state = "WA", geometry = F, cache_table = TRUE) %>% 
-  left_join( language_at_home_vars, by="variable")%>%
-  select(-c(NAME,label,concept)) %>%
-  filter(variable == "S1601_C01_001" | variable == "S1601_C01_002"| variable == "S1601_C01_003"| variable == "S1601_C01_004"|
-           variable == "S1601_C01_008"|variable == "S1601_C01_012"|variable == "S1601_C01_016") %>%
-  pivot_wider(names_from = variable, values_from = c(estimate,moe)) %>%
-  rename("est_population_5+"="estimate_S1601_C01_001","moe_population_5+"="moe_S1601_C01_001",
-         "est_english"="estimate_S1601_C01_002","moe_english"="moe_S1601_C01_002",
-         "est_non_english"="estimate_S1601_C01_003","moe_non_english"="moe_S1601_C01_003",
-         "est_spanish"="estimate_S1601_C01_004","moe_spanish"="moe_S1601_C01_004",
-         "est_indoeuro_lang"="estimate_S1601_C01_008","moe_indoeuro_lang"="moe_S1601_C01_008",
-         "est_aapi_lang"="estimate_S1601_C01_012","moe_aapi_lang"="moe_S1601_C01_012",
-         "est_other_lang"="estimate_S1601_C01_016","moe_other_lang"="moe_S1601_C01_016")
+#new vars
+language_at_home_data <- get_acs(geography = "block group", state = "WA", geometry = F,
+                    variables= c(age5andolder = "B16004_001",
+                                 age5to17="B16004_002", age5to17_eng="B16004_003",
+                                 age5to17_spanish="B16004_004",age5to17_european="B16004_009",
+                                 age5to17_aapi="B16004_014",
+                                 age18to64="B16004_024", age18to64_eng="B16004_025",
+                                 age18to64_spanish="B16004_026",age18to64_european="B16004_031",
+                                 age18to64_aapi="B16004_035",
+                                 age65andolder="B16004_046",
+                                 age65andolder_eng="B16004_047", age65andolder_spanish="B16004_048",
+                                 age65andolder_european="B16004_053",age65andolder_aapi="B16004_058")) %>%
+  pivot_wider(names_from = variable, values_from = c(estimate,moe)) 
+#combining across age groups
+language_at_home_data$estimate_eng = language_at_home_data$estimate_age5to17_eng +language_at_home_data$estimate_age18to64_eng+language_at_home_data$estimate_age65andolder_eng
+language_at_home_data$moe_eng = language_at_home_data$moe_age5to17_eng +language_at_home_data$moe_age18to64_eng+language_at_home_data$moe_age65andolder_eng
+language_at_home_data$estimate_spanish = language_at_home_data$estimate_age5to17_spanish +language_at_home_data$estimate_age18to64_spanish+language_at_home_data$estimate_age65andolder_spanish
+language_at_home_data$moe_spanish = language_at_home_data$moe_age5to17_spanish +language_at_home_data$moe_age18to64_spanish+language_at_home_data$moe_age65andolder_spanish
+language_at_home_data$estimate_european = language_at_home_data$estimate_age5to17_european +language_at_home_data$estimate_age18to64_european+language_at_home_data$estimate_age65andolder_european
+language_at_home_data$moe_european = language_at_home_data$moe_age5to17_european +language_at_home_data$moe_age18to64_european+language_at_home_data$moe_age65andolder_european
+language_at_home_data$estimate_aapi = language_at_home_data$estimate_age5to17_aapi +language_at_home_data$estimate_age18to64_aapi+language_at_home_data$estimate_age65andolder_aapi
+language_at_home_data$moe_aapi = language_at_home_data$moe_age5to17_aapi +language_at_home_data$moe_age18to64_aapi+language_at_home_data$moe_age65andolder_aapi
+language_at_home_data <- language_at_home_data %>%
+  select(c("GEOID", "NAME","estimate_age5andolder","moe_age5andolder","estimate_eng",
+           "moe_eng", "estimate_spanish", "moe_spanish", "estimate_european", "moe_european",
+           "estimate_aapi", "moe_aapi"))
 
 #join tables
 all_census_data <- left_join(all_census_data,language_at_home_data,by="GEOID")

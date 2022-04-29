@@ -43,6 +43,11 @@ language_at_home_data <- language_at_home[[2]]
 # num_earners_metadata <- num_earners[[1]]
 # num_earners_data <- num_earners[[2]]
 
+### Median household income B19013
+household_income <- get_and_label_acs_data( prefix="B19013", columns=1)
+household_income_metadata <- language_at_home[[1]]
+household_income_data <- language_at_home[[2]]
+
 ### Tenure: B25009, B25014
 tenure_by_household_size <- get_and_label_acs_data( prefix="B25009", columns=17)
 tenure_by_occupants_per_room <- get_and_label_acs_data( prefix="B25014", columns=13)
@@ -57,7 +62,8 @@ work_status_data <- work_status[[2]]
 ### Combine all tables
 acs_dataframes <- list(marital_status_data, 
                        language_at_home_data, 
-                       num_earners_data, 
+                       # num_earners_data, 
+                       household_income_data,
                        tenure_data,
                        work_status_data)
 
@@ -67,3 +73,4 @@ geography_data <-get_acs (geography = "block group", variables = "B19013_001",
   select( "GEOID", "geometry")
 
 all_acs_data <- left_join(all_acs_data, geography_data, by="GEOID")
+

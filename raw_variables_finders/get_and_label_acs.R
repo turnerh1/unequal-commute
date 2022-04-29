@@ -3,8 +3,9 @@ library(dplyr)
 # marital status (B12001) - count of people (15+ age) var: 'est_population_15+'
 # language (B16004)- number of people who speak per group (5+ age) var: 'estimate_age5andolder'
 # num of household earners (B19121) - number of earners per family var: 'est_num_families'
-# household data/occupancy char. (S2501) - by number of occupied housing units var: 'est_housing_units_total'
-# work status (S2303) - count of people (16+ age) var: 'est_population_16to64'
+# household data/occupancy char. (B25009, B25014) - Tenure by household size and tenure by occupancy
+# work status (B23022) - count of people (16+ age) var: 'est_population_16to64'
+
 
 ### this function needs acs5_vars to be defined
 get_and_label_acs_data <- function( prefix, columns, search_geo="block group", get_sf=F )
@@ -41,7 +42,22 @@ num_earners <- get_and_label_acs_data( prefix="B19121", columns=5)
 num_earners_metadata <- num_earners[[1]]
 num_earners_data <- num_earners[[2]]
 
+### Tenure: B25009, B25014
+tenure_by_household_size <- get_and_label_acs_data( prefix="B25009", columns=17)
+tenure_by_occupants_per_room <- get_and_label_acs_data( prefix="B25014", columns=13)
+tenure_metadata <- rbind( tenure_by_household_size[[1]], tenure_by_occupants_per_room[[1]] )
+tenure_data <- full_join( tenure_by_household_size[[2]], tenure_by_occupants_per_room[[2]] )
+
+### Work status: B23022
+work_status <- get_and_label_acs_data( prefix="B23022", columns=49)
+work_status_metadata <- work_status[[1]]
+work_status_data <- work_status[[2]]
+
 ### Combine all tables
-acs_dataframes <- list(marital_status_data, language_at_home_data, num_earners_data )
+acs_dataframes <- list(marital_status_data, 
+                       language_at_home_data, 
+                       num_earners_data, 
+                       tenure_data,
+                       work_status_data)
 
 all_acs_data <- join_all( acs_dataframes, by="GEOID", type="full" )

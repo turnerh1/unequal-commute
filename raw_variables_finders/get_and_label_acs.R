@@ -1,3 +1,5 @@
+library('plyr', include.only = 'join_all' )
+library(dplyr)
 # marital status (B12001) - count of people (15+ age) var: 'est_population_15+'
 # language (B16004)- number of people who speak per group (5+ age) var: 'estimate_age5andolder'
 # num of household earners (B19121) - number of earners per family var: 'est_num_families'
@@ -13,23 +15,33 @@ get_and_label_acs_data <- function( prefix, columns, search_geo="block group", g
     mutate( label = str_remove(label, "Estimate!!Total:") ) %>% 
     select( -"concept")
   
-  data_table <- get_acs(geography = search_geo, variables = metadata_table$code, state = "WA", geometry = get_sf) %>% 
-    pivot_wider(names_from = variable, values_from = c(estimate,moe))
+  data_table <- as.data.frame( get_acs(geography = search_geo, variables = metadata_table$code, state = "WA", geometry = get_sf) %>% 
+    pivot_wider(names_from = variable, values_from = c(estimate,moe)) )
   
+  # print( typeof( data_table ) )
   return( list( metadata_table, data_table ) )
 }
 
 fetch_year <- "2019"
 acs5_vars <- load_variables(year = fetch_year, dataset = "acs5", cache = TRUE)
 
+
+### Marital Status: B12001
 marital_status <- get_and_label_acs_data( prefix="B12001", columns=19)
 marital_status_metadata <- marital_status[[1]]
 marital_status_data <- marital_status[[2]]
 
+### Language at home: B16004
 language_at_home <- get_and_label_acs_data( prefix="B16004", columns=67)
 language_at_home_metadata <- language_at_home[[1]]
 language_at_home_data <- language_at_home[[2]]
 
+### Number of household earners: B19121
 num_earners <- get_and_label_acs_data( prefix="B19121", columns=5)
 num_earners_metadata <- num_earners[[1]]
 num_earners_data <- num_earners[[2]]
+
+### Combine all tables
+acs_dataframes <- list(marital_status_data, language_at_home_data, num_earners_data )
+
+all_acs_data <- join_all( acs_dataframes, by="GEOID", type="full" )

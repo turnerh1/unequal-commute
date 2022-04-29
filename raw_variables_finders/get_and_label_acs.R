@@ -61,3 +61,8 @@ acs_dataframes <- list(marital_status_data,
                        work_status_data)
 
 all_acs_data <- join_all( acs_dataframes, by="GEOID", type="full" )
+geography_data <-get_acs (geography = "block group", variables = "B19013_001", 
+                          state = "WA", geometry = T, cache_table = T) %>% 
+  select( "GEOID", "geometry")
+
+all_acs_data <- left_join(all_acs_data, geography_data, by="GEOID")

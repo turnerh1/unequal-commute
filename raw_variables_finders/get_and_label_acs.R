@@ -37,10 +37,11 @@ language_at_home <- get_and_label_acs_data( prefix="B16004", columns=67)
 language_at_home_metadata <- language_at_home[[1]]
 language_at_home_data <- language_at_home[[2]]
 
-### Number of household earners: B19121
-num_earners <- get_and_label_acs_data( prefix="B19121", columns=5)
-num_earners_metadata <- num_earners[[1]]
-num_earners_data <- num_earners[[2]]
+# Number of household earners is unavailable by block group
+# ### Number of household earners: B19121
+# num_earners <- get_and_label_acs_data( prefix="B19121", columns=5)
+# num_earners_metadata <- num_earners[[1]]
+# num_earners_data <- num_earners[[2]]
 
 ### Tenure: B25009, B25014
 tenure_by_household_size <- get_and_label_acs_data( prefix="B25009", columns=17)

@@ -45,8 +45,8 @@ language_at_home_data <- language_at_home[[2]]
 
 ### Median household income B19013
 household_income <- get_and_label_acs_data( prefix="B19013", columns=1)
-household_income_metadata <- language_at_home[[1]]
-household_income_data <- language_at_home[[2]]
+household_income_metadata <- household_income[[1]]
+household_income_data <- household_income[[2]]
 
 ### Tenure: B25009, B25014
 tenure_by_household_size <- get_and_label_acs_data( prefix="B25009", columns=17)

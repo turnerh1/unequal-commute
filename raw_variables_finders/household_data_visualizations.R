@@ -2,6 +2,90 @@ library(tidycensus)
 library(tidyverse)
 options(tigris_use_cache = TRUE)
 
+#Correlation visualizations
+
+job_access_gap <- read_csv("job_access_gap.csv")
+
+sea_gap <- job_access_gap %>%
+  filter(MSA == "Seattle")
+
+#calculate how many are in 10% of data
+quantity<-round(.1*dim(sea_gap)[1])
+
+high<-sea_gap %>%
+  arrange(desc(spatialmismatch))%>%
+  head(quantity)
+
+low<-sea_gap %>%
+  arrange((spatialmismatch))%>%
+  head(quantity)
+
+#import big data CSV
+library(readr)
+#acs_dataset <- read_csv("acs_dataset.csv")
+occupancy_census <- all_acs_data %>%
+  select(GEOID,NAME,contains("B25014"))
+
+occupancy_census$GEOID <- as.numeric(occupancy_census$GEOID)
+
+
+#clean and create new columns combining sex
+occupancy_census$total_pop <- occupancy_census$estimate_B25014_002 + occupancy_census$estimate_B25014_008
+occupancy_census$total_.5orless <- occupancy_census$estimate_B25014_003 + occupancy_census$estimate_B25014_009
+occupancy_census$total_.51to1 <- occupancy_census$estimate_B25014_004 + occupancy_census$estimate_B25014_010
+occupancy_census$total_1.01to1.5 <- occupancy_census$estimate_B25014_005 + occupancy_census$estimate_B25014_011
+occupancy_census$total_1.51to2 <- occupancy_census$estimate_B25014_006 + occupancy_census$estimate_B25014_012
+occupancy_census$total_2.01ormore <- occupancy_census$estimate_B25014_007 + occupancy_census$estimate_B25014_013
+
+#join with work status data
+occupancy_high<-left_join(high,occupancy_census,by="GEOID")
+
+occupancy_low<-left_join(low,occupancy_census,by="GEOID")
+
+
+#prop table
+htotal_.5orless=sum(occupancy_high$total_.5orless)
+htotal_.51to1=sum(occupancy_high$total_.51to1)
+htotal_1.01to1.5=sum(occupancy_high$total_1.01to1.5)
+htotal_1.51to2=sum(occupancy_high$total_1.51to2)
+htotal_2.01ormore=sum(occupancy_high$total_2.01ormore)
+htotal_pop=sum(occupancy_high$total_pop)
+
+ltotal_.5orless=sum(occupancy_low$total_.5orless)
+ltotal_.51to1=sum(occupancy_low$total_.51to1)
+ltotal_1.01to1.5=sum(occupancy_low$total_1.01to1.5)
+ltotal_1.51to2=sum(occupancy_low$total_1.51to2)
+ltotal_2.01ormore=sum(occupancy_low$total_2.01ormore)
+ltotal_pop=sum(occupancy_low$total_pop)
+
+totals_high<-data.frame(occupancy = c(".5orless",".51to1","1.01to1.5","1.51to2","2.01ormore","Total"),
+                        high_count = c(htotal_.5orless, htotal_.51to1, htotal_1.01to1.5, htotal_1.51to2, htotal_2.01ormore, htotal_pop))
+totals_high$high_prop<- totals_high$high_count / totals_high$high_count[6]
+
+totals_low<-data.frame(occupancy = c(".5orless",".51to1","1.01to1.5","1.51to2","2.01ormore","Total"),
+                        low_count = c(ltotal_.5orless, ltotal_.51to1, ltotal_1.01to1.5, ltotal_1.51to2, ltotal_2.01ormore, ltotal_pop))
+totals_low$low_prop<- totals_low$low_count / totals_low$low_count[6]
+
+totals <- left_join(totals_high,totals_low, by = "occupancy")
+
+
+#fun colors:
+# https://r-graph-gallery.com/38-rcolorbrewers-palettes.html
+
+
+totals %>%
+  pivot_longer(cols = c(low_prop,high_prop), names_to = "prop_type", values_to = "prop") %>%
+  filter(occupancy != "Total") %>%
+  ggplot(aes(x=occupancy,y=prop,fill=prop_type))+
+  geom_col(position = position_dodge(), stat = "identity") +
+  xlab("Occupancy Level") + 
+  ylab("Proportion of Households")+
+  labs(title= "Occupancy Proportions for Highest and Lowest \n 10% Spatial Mismatch in Seattle") +
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.background = element_rect(fill = '#f7f7f7'))
+
+
+
 # # load job_access_gap, but leave out the geometries
 # job_access_gap <- read_csv("job_access_gap.csv",
 #                            col_types = cols(geometry = col_skip()))

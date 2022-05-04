@@ -77,9 +77,10 @@ totals <- left_join(htotals,ltotals, by = "marital_status")
 
 totals<-totals %>%
   pivot_longer(cols = c(lprop,hprop), names_to = "prop_type", values_to = "prop")
-totals %>%  
+totals %>% 
+  arrange(desc(prop)) %>%
   filter(marital_status != "Total") %>%
-  ggplot(aes(x=marital_status,y=prop,fill=prop_type))+
+  ggplot(aes(x=reorder(marital_status,prop),y=prop,fill=prop_type))+
   geom_col(position = position_dodge()) +
   xlab("Marital Status") + 
   ylab("Proportion of Population (ages 15+)")+
@@ -87,3 +88,4 @@ totals %>%
   theme(plot.title = element_text(hjust = 0.5),
         panel.background = element_rect(fill = '#f7f7f7')) + 
   scale_fill_hue(labels = c("High/Worst", "Low/Best"))
+

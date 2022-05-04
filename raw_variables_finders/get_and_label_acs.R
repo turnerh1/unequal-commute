@@ -5,7 +5,7 @@ library(dplyr)
 # num of household earners (B19121) - number of earners per family var: 'est_num_families'
 # household data/occupancy char. (B25009, B25014) - Tenure by household size and tenure by occupancy
 # work status (B23022) - count of people (16+ age) var: 'est_population_16to64'
-
+# educational attainment (B15003) - (25+ age)
 
 ### this function needs acs5_vars to be defined
 get_and_label_acs_data <- function( prefix, columns, search_geo="block group", get_sf=F )
@@ -59,13 +59,19 @@ work_status <- get_and_label_acs_data( prefix="B23022", columns=49)
 work_status_metadata <- work_status[[1]]
 work_status_data <- work_status[[2]]
 
+### Educational attainment: (B15003)
+education <- get_and_label_acs_data( prefix="B15003", columns=25)
+education_metadata <- education[[1]]
+education_data <- education[[2]]
+
 ### Combine all tables
 acs_dataframes <- list(marital_status_data, 
                        language_at_home_data, 
                        # num_earners_data, 
                        household_income_data,
                        tenure_data,
-                       work_status_data)
+                       work_status_data,
+                       education_data)
 
 all_acs_data <- join_all( acs_dataframes, by="GEOID", type="full" )
 geography_data <-get_acs (geography = "block group", variables = "B19013_001", 
@@ -73,4 +79,7 @@ geography_data <-get_acs (geography = "block group", variables = "B19013_001",
   select( "GEOID", "geometry")
 
 all_acs_data <- left_join(all_acs_data, geography_data, by="GEOID")
+
+write_csv(all_acs_data, "./data/acs_dataset.csv")
+
 

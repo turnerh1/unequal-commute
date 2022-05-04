@@ -2,6 +2,117 @@ library(tidycensus)
 library(tidyverse)
 options(tigris_use_cache = TRUE)
 
+
+#Correlation visualizations
+
+job_access_gap <- read_csv("job_access_gap.csv")
+
+sea_gap <- job_access_gap %>%
+  filter(MSA == "Seattle")
+
+#calculate how many are in 10% of data
+quantity<-round(.1*dim(sea_gap)[1])
+
+high<-sea_gap %>%
+  arrange(desc(spatialmismatch))%>%
+  head(quantity)
+
+low<-sea_gap %>%
+  arrange((spatialmismatch))%>%
+  head(quantity)
+
+#import big data CSV
+library(readr)
+acs_dataset <- read_csv("acs_dataset.csv")
+work_status_census <- acs_dataset %>%
+  select(GEOID,NAME,contains("B23022"))
+
+work_status_census$GEOID <- as.numeric(work_status_census$GEOID)
+
+#clean and create new columns combining sex
+work_status_census$total_pop <- work_status_data$estimate_B23022_002 + work_status_data$estimate_B23022_026
+work_status_census$total_worked <- work_status_data$estimate_B23022_003 + work_status_data$estimate_B23022_027
+work_status_census$total_35more <- work_status_data$estimate_B23022_004 + work_status_data$estimate_B23022_028
+work_status_census$total_15to34 <- work_status_data$estimate_B23022_011 + work_status_data$estimate_B23022_035
+work_status_census$total_1to14 <- work_status_data$estimate_B23022_018 + work_status_data$estimate_B23022_042
+work_status_census$total_notworked <- work_status_data$estimate_B23022_025 + work_status_data$estimate_B23022_049
+
+htotal_1to14=sum(work_status_high$total_1to14)
+htotal_15to34=sum(work_status_high$total_15to34)
+htotal_35more=sum(work_status_high$total_35more)
+htotal_worked=sum(work_status_high$total_worked)
+htotal_notworked=sum(work_status_high$total_notworked)
+htotal_pop=sum(work_status_high$total_pop)
+
+ltotal_1to14=sum(work_status_low$total_1to14)
+ltotal_15to34=sum(work_status_low$total_15to34)
+ltotal_35more=sum(work_status_low$total_35more)
+ltotal_worked=sum(work_status_low$total_worked)
+ltotal_notworked=sum(work_status_low$total_notworked)
+ltotal_pop=sum(work_status_low$total_pop)
+
+#join with work status data
+work_status_high<-left_join(high,work_status_census,by="GEOID")
+
+work_status_low<-left_join(low,work_status_census,by="GEOID")
+
+totals_high<-data.frame(work_status = c("1to14_hours","15to35_hours","35more_hours","Worked","Not_Worked","Total"),
+                        high_count = c(htotal_1to14, htotal_15to34, htotal_35more, htotal_worked, htotal_notworked, htotal_pop))
+totals_high$high_prop<- totals_high$high_count / totals_high$high_count[6]
+
+totals_low<-data.frame(work_status = c("1to14_hours","15to35_hours","35more_hours","Worked","Not_Worked","Total"),
+                       low_count = c(ltotal_1to14, ltotal_15to34, ltotal_35more, ltotal_worked, ltotal_notworked, ltotal_pop))
+totals_low$low_prop<- totals_low$low_count / totals_low$low_count[6]
+
+totals <- left_join(totals_high,totals_low, by = "work_status")
+
+
+#fun colors:
+# https://r-graph-gallery.com/38-rcolorbrewers-palettes.html
+
+totals_high %>%
+  filter(work_status!= "Worked" & work_status != "Total") %>%
+  ggplot()+
+  geom_col(aes(x=work_status,y=prop,fill=work_status)) +
+  xlab("Work Status") + 
+  ylab("Proportion of Population (ages 16-64)")+
+  labs(title= "Work Status Proportions for Highest 10%\n(Worst) Spatial Mismatch in Seattle") +
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.background = element_rect(fill = '#f7f7f7'),
+        legend.position = "none")+
+  scale_fill_brewer(palette = "Set3")
+
+
+totals_low %>%
+  filter(work_status!= "Worked" & work_status != "Total") %>%
+  ggplot()+
+  geom_col(aes(x=work_status,y=prop,fill=work_status)) +
+  xlab("Work Status") + 
+  ylab("Proportion of Population (ages 16-64)")+
+  labs(title= "Work Status Proportions for Lowest 10%\n(Best) Spatial Mismatch in Seattle") +
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.background = element_rect(fill = '#f7f7f7'),
+        legend.position = "none")+
+  scale_fill_brewer(palette = "Set3")
+
+totals %>%
+  pivot_longer(cols = c(low_prop,high_prop), names_to = "prop_type", values_to = "prop") %>%
+  filter(work_status!= "Worked" & work_status != "Total") %>%
+  ggplot(aes(x=work_status,y=prop,fill=prop_type))+
+  geom_col(position = position_dodge()) +
+  xlab("Work Status") + 
+  ylab("Proportion of Population (ages 16-64)")+
+  labs(title= "Work Status Proportions for Highest and Lowest \n 10% Spatial Mismatch in Seattle") +
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.background = element_rect(fill = '#f7f7f7'))
+
+
+
+
+
+
+
+
 # load job_access_gap, but leave out the geometries
 job_access_gap <- read_csv("job_access_gap.csv", 
                            col_types = cols(geometry = col_skip()))

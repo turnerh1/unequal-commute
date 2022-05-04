@@ -71,7 +71,7 @@ total_pop=sum(marital_status_high$nevermarried,total_married,total_widowed,total
 
 totals<-data.frame(marital_status = c("Single","Married","Widowed","Divorced","Total"),
                counts = c(total_single, total_married, total_widowed, total_divorced, total_pop))
-totals$prop<- df$counts / df$counts[5]
+totals$prop<- totals$counts / totals$counts[5]
 
 #fun colors:
 # https://r-graph-gallery.com/38-rcolorbrewers-palettes.html

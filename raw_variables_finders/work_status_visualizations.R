@@ -29,6 +29,11 @@ work_status_census <- acs_dataset %>%
 
 work_status_census$GEOID <- as.numeric(work_status_census$GEOID)
 
+#join with work status data
+work_status_high<-left_join(high,work_status_census,by="GEOID")
+
+work_status_low<-left_join(low,work_status_census,by="GEOID")
+
 #clean and create new columns combining sex
 work_status_census$total_pop <- work_status_data$estimate_B23022_002 + work_status_data$estimate_B23022_026
 work_status_census$total_worked <- work_status_data$estimate_B23022_003 + work_status_data$estimate_B23022_027
@@ -51,10 +56,6 @@ ltotal_worked=sum(work_status_low$total_worked)
 ltotal_notworked=sum(work_status_low$total_notworked)
 ltotal_pop=sum(work_status_low$total_pop)
 
-#join with work status data
-work_status_high<-left_join(high,work_status_census,by="GEOID")
-
-work_status_low<-left_join(low,work_status_census,by="GEOID")
 
 totals_high<-data.frame(work_status = c("1to14_hours","15to35_hours","35more_hours","Worked","Not_Worked","Total"),
                         high_count = c(htotal_1to14, htotal_15to34, htotal_35more, htotal_worked, htotal_notworked, htotal_pop))

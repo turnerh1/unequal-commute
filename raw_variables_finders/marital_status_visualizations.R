@@ -80,12 +80,13 @@ totals<-totals %>%
 totals %>% 
   arrange(desc(prop)) %>%
   filter(marital_status != "Total") %>%
-  ggplot(aes(x=reorder(marital_status,prop),y=prop,fill=prop_type))+
+  ggplot(aes(x=reorder(marital_status,prop),y=prop,fill=forcats::fct_rev(prop_type)))+
   geom_col(position = position_dodge()) +
   xlab("Marital Status") + 
   ylab("Proportion of Population (ages 15+)")+
   labs(fill="Spatial Mismatch",title= "Marital Status Proportions for Highest and Lowest \n 10% Spatial Mismatch in Seattle") +
   theme(plot.title = element_text(hjust = 0.5),
         panel.background = element_rect(fill = '#f7f7f7')) + 
-  scale_fill_hue(labels = c("High/Worst", "Low/Best"))
+  scale_fill_manual(labels = c( "Low/Best","High/Worst"),
+                    values=c("#9ecae1","#de2d26"))
 

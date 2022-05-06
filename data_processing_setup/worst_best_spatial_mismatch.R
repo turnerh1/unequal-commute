@@ -1,7 +1,7 @@
 library(tidycensus)
 library(tidyverse)
 
-job_access_gap <- read_csv("job_access_gap.csv")
+job_access_gap <- read_csv("./data/job_access_gap.csv")
 
 sea_gap <- job_access_gap %>%
   filter(MSA == "Seattle")
@@ -20,10 +20,15 @@ low<-sea_gap %>%
 
 #import big data CSV
 library(readr)
-acs_dataset <- read_csv("acs_dataset.csv")
-View(acs_dataset)
+acs_dataset <- read_csv("./data/acs_dataset.csv")
+# View(acs_dataset)
 
 #select the columns you want
 
+all_acs_data$GEOID <- as.integer( all_acs_data$GEOID )
+### joining is N O T working
+high_with_acs <- left_join( high, all_acs_data, by="GEOID" )
+
+anti_high_with_acs <- anti_join( high, all_acs_data, by="GEOID" )
 
 

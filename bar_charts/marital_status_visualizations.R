@@ -1,4 +1,3 @@
-
 marital_census <- acs_dataset %>%
   select(GEOID,NAME,contains("B1200"))
 

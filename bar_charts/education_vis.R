@@ -108,8 +108,9 @@ totals<-left_join(htotals,ltotals, by = "education_level") %>%
   pivot_longer(cols = c(lprop,hprop), names_to = "prop_type", values_to = "prop")
 
 totals %>% 
+  arrange(desc(prop)) %>%
   filter(education_level != "Total" & education_level != "Higher Ed Degree" & education_level != "Post Grad Degree") %>%
-  ggplot(aes(x=reorder(education_level,order),y=prop,fill=prop_type))+
+  ggplot(aes(x=reorder(education_level,order),y=prop,fill=forcats::fct_rev(prop_type)))+
   geom_col(position = position_dodge()) +
   xlab("Education Level") + 
   ylab("Proportion of Population (ages 25+)")+
@@ -133,3 +134,4 @@ totals %>%
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
   scale_fill_manual(labels = c( "Low/Best","High/Worst"),
                     values=c("#9ecae1","#de2d26"))
+

@@ -73,15 +73,15 @@ ltotal_1.51to2=sum(occupancy_low$total_1.51to2)
 ltotal_2.01ormore=sum(occupancy_low$total_2.01ormore)
 ltotal_pop=sum(occupancy_low$total_pop)
 
-total_occup_high<-data.frame(occupancy = c(".5orless",".51to1","1.01to1.5","1.51to2","2.01ormore","Total"),
+total_occup_high<-data.frame(occupancy = c(".5 or less",".51 to 1","1.01 to 1.5","1.51 to 2","2.01 or more","Total"),
                              high_count = c(htotal_.5orless, htotal_.51to1, htotal_1.01to1.5, htotal_1.51to2, htotal_2.01ormore, htotal_pop))
 total_occup_high$high_prop<- total_occup_high$high_count / total_occup_high$high_count[6]
 
-total_occup_low<-data.frame(occupancy = c(".5orless",".51to1","1.01to1.5","1.51to2","2.01ormore","Total"),
+total_occup_low<-data.frame(occupancy = c(".5 or less",".51 to 1","1.01 to 1.5","1.51 to 2","2.01 or more","Total"),
                             low_count = c(ltotal_.5orless, ltotal_.51to1, ltotal_1.01to1.5, ltotal_1.51to2, ltotal_2.01ormore, ltotal_pop))
-total_occup_low$low_prop<- total_low$low_count / total_low$low_count[6]
+total_occup_low$low_prop<- total_occup_low$low_count / total_occup_low$low_count[6]
 
-total_occup <- left_join(total_high,total_low, by = "occupancy")
+total_occup <- left_join(total_occup_high,total_occup_low, by = "occupancy")
 
 # Household size data
 htotal_size1=sum(household_size_high$size1)
@@ -103,98 +103,42 @@ ltotal_size7more=sum(household_size_low$size7more)
 ltotal_size_pop=sum(household_size_low$total_pop)
 
 
-total_size_high <- data.frame(size = c("1 person","2 person","3 person","4 person","5 person","6 person","7 or more person","Total"),
+total_size_high <- data.frame(size = c("1 person","2 person","3 person","4 person","5 person","6 person","7 or more persons","Total"),
               high_count = c(htotal_size1, htotal_size2, htotal_size3, htotal_size4, htotal_size5, htotal_size6, htotal_size7more, htotal_size_pop))
 total_size_high$high_prop<- total_size_high$high_count / total_size_high$high_count[8]
 
-total_size_low <- data.frame(size = c("1 person","2 person","3 person","4 person","5 person","6 person","7 or more person","Total"),
+total_size_low <- data.frame(size = c("1 person","2 person","3 person","4 person","5 person","6 person","7 or more persons","Total"),
               low_count = c(ltotal_size1, ltotal_size2, ltotal_size3, ltotal_size4, ltotal_size5, ltotal_size6, ltotal_size7more, ltotal_size_pop))
 total_size_low$low_prop <- total_size_low$low_count / total_size_low$low_count[8]
 
 total_household_size <- left_join(total_size_high,total_size_low, by = "size")
 
 
-#fun colors:
-# https://r-graph-gallery.com/38-rcolorbrewers-palettes.html
-
 #Plot graphs
 total_occup %>%
   pivot_longer(cols = c(low_prop,high_prop), names_to = "prop_type", values_to = "prop") %>%
   filter(occupancy != "Total") %>%
-  ggplot(aes(x=occupancy,y=prop,fill=prop_type))+
-  geom_col(position = position_dodge(), stat = "identity") +
+  ggplot(aes(x=occupancy,y=prop,fill=forcats::fct_rev(prop_type)))+
+  geom_col(position = position_dodge()) +
   xlab("Occupancy Level") + 
   ylab("Proportion of Households")+
-  labs(title= "Occupancy Proportions for Highest and Lowest \n 10% Spatial Mismatch in Seattle") +
+  labs(fill="Spatial Mismatch", title= "Occupancy Proportions for Highest and Lowest \n 10% Spatial Mismatch in Seattle") +
   theme(plot.title = element_text(hjust = 0.5),
-        panel.background = element_rect(fill = '#f7f7f7'))
+        panel.background = element_rect(fill = '#f7f7f7'),
+        axis.text.x = element_text(angle = 45, hjust=1)) + 
+  scale_fill_manual(labels = c( "Low/Best","High/Worst"),
+                    values=c("#9ecae1","#de2d26"))
 
 total_household_size %>%
   pivot_longer(cols = c(low_prop,high_prop), names_to = "prop_type", values_to = "prop") %>%
   filter(size != "Total") %>%
-  ggplot(aes(x=size,y=prop,fill=prop_type))+
-  geom_col(position = position_dodge(), stat = "identity") +
+  ggplot(aes(x=size,y=prop,fill=forcats::fct_rev(prop_type)))+
+  geom_col(position = position_dodge()) +
   xlab("Household Size") + 
   ylab("Proportion of Households")+
-  labs(title= "Household Size Proportions for Highest and Lowest \n 10% Spatial Mismatch in Seattle") +
+  labs(fill="Spatial Mismatch", title= "Household Size Proportions for Highest and Lowest \n 10% Spatial Mismatch in Seattle") +
   theme(plot.title = element_text(hjust = 0.5),
-        panel.background = element_rect(fill = '#f7f7f7'))
-
-
-
-# # load job_access_gap, but leave out the geometries
-# job_access_gap <- read_csv("job_access_gap.csv",
-#                            col_types = cols(geometry = col_skip()))
-# 
-# #convert job_access_gap data to have census tracts
-# 
-# job_access_gap <- job_access_gap %>%
-#   rename("BG_GEOID"="GEOID")
-# job_access_gap$BG_GEOID<-as.character(job_access_gap$BG_GEOID)
-# 
-# T_GEOID<-substr(job_access_gap$BG_GEOID,1,11)
-# 
-# job_access_gap <- cbind(job_access_gap,T_GEOID)
-# 
-# # import household size data by running file 'household_data.R"
-# 
-  household_size_data <- household_size_data %>%
-    rename("T_GEOID" = "GEOID")
-
-  household_geometry <- household_geometry %>%
-    rename("T_GEOID" = "GEOID")
-# 
-
-household_size_data <-
-  separate(household_size_data, col = NAME, into = c("Tract","County","State"), sep = ", ")
-
-household_size_data$County <- str_remove_all(household_size_data$County," County")
-
-household_size_data$est_housing_size_1lessoccup_prop <- household_size_data$est_housing_size_1lessoccup/household_size_data$est_housing_units_total
-household_size_data$est_housing_size_1.5lessoccup_prop <- household_size_data$est_housing_size_1.5lessoccup/household_size_data$est_housing_units_total
-household_size_data$est_housing_size_1.51moreoccup_prop <- household_size_data$est_housing_size_1.51moreoccup/household_size_data$est_housing_units_total
-
-#Joining household and geometry
-household_size <-right_join(household_geometry, household_size_data, by = "T_GEOID")
-
-# choose colors: http://colorbrewer2.org/ 
-#colors and breaks
-mybreaks<-c(10,20,30,40,50)
-my_colors <- c("white","#fcae91","#fb6a4a","#de2d26","#a50f15")
-
-
-# plot of occupants_per_room_1.51_more in King County
-
-household_size %>%
-  # filter(County == "King County") %>%
-ggplot() +
-  geom_sf(aes(fill = est_housing_size_1.5lessoccup_prop, geometry = geometry))
-
-household_size %>%
-ggplot() +
-  geom_sf(aes(fill = est_housing_size_1.5lessoccup_prop, geometry = geometry), size=0.00001) +
-  labs(title="Household Size by Tract Group",
-       subtitle = "1.01 to 1.50 Occupants per Room")+
-  theme(plot.title = element_text(hjust = 0.5, size=15)) +
-  theme(plot.subtitle = element_text(hjust = 0.5, size=10))+
-  labs(fill = "Percentage of Occupied Housing")
+        panel.background = element_rect(fill = '#f7f7f7'),
+        axis.text.x = element_text(angle = 45, hjust=1)) + 
+  scale_fill_manual(labels = c( "Low/Best","High/Worst"),
+                    values=c("#9ecae1","#de2d26"))

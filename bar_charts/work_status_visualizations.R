@@ -5,25 +5,25 @@ options(tigris_use_cache = TRUE)
 
 #Correlation visualizations
 
-job_access_gap <- read_csv("job_access_gap.csv")
-
-sea_gap <- job_access_gap %>%
-  filter(MSA == "Seattle")
-
-#calculate how many are in 10% of data
-quantity<-round(.1*dim(sea_gap)[1])
-
-high<-sea_gap %>%
-  arrange(desc(spatialmismatch))%>%
-  head(quantity)
-
-low<-sea_gap %>%
-  arrange((spatialmismatch))%>%
-  head(quantity)
+# job_access_gap <- read_csv("job_access_gap.csv")
+# 
+# sea_gap <- job_access_gap %>%
+#   filter(MSA == "Seattle")
+# 
+# #calculate how many are in 10% of data
+# quantity<-round(.1*dim(sea_gap)[1])
+# 
+# high<-sea_gap %>%
+#   arrange(desc(spatialmismatch))%>%
+#   head(quantity)
+# 
+# low<-sea_gap %>%
+#   arrange((spatialmismatch))%>%
+#   head(quantity)
 
 #import big data CSV
 library(readr)
-acs_dataset <- read_csv("acs_dataset.csv")
+# acs_dataset <- read_csv("acs_dataset.csv")
 work_status_census <- acs_dataset %>%
   select(GEOID,NAME,contains("B23022"))
 
@@ -35,12 +35,26 @@ work_status_high<-left_join(high,work_status_census,by="GEOID")
 work_status_low<-left_join(low,work_status_census,by="GEOID")
 
 #clean and create new columns combining sex
-work_status_census$total_pop <- work_status_data$estimate_B23022_002 + work_status_data$estimate_B23022_026
-work_status_census$total_worked <- work_status_data$estimate_B23022_003 + work_status_data$estimate_B23022_027
-work_status_census$total_35more <- work_status_data$estimate_B23022_004 + work_status_data$estimate_B23022_028
-work_status_census$total_15to34 <- work_status_data$estimate_B23022_011 + work_status_data$estimate_B23022_035
-work_status_census$total_1to14 <- work_status_data$estimate_B23022_018 + work_status_data$estimate_B23022_042
-work_status_census$total_notworked <- work_status_data$estimate_B23022_025 + work_status_data$estimate_B23022_049
+work_status_census$total_pop <- work_status_census$estimate_B23022_002 + work_status_census$estimate_B23022_026
+work_status_census$total_worked <- work_status_census$estimate_B23022_003 + work_status_census$estimate_B23022_027
+work_status_census$total_35more <- work_status_census$estimate_B23022_004 + work_status_census$estimate_B23022_028
+work_status_census$total_15to34 <- work_status_census$estimate_B23022_011 + work_status_census$estimate_B23022_035
+work_status_census$total_1to14 <- work_status_census$estimate_B23022_018 + work_status_census$estimate_B23022_042
+work_status_census$total_notworked <- work_status_census$estimate_B23022_025 + work_status_census$estimate_B23022_049
+
+work_status_high$total_pop <- work_status_high$estimate_B23022_002 + work_status_high$estimate_B23022_026
+work_status_high$total_worked <- work_status_high$estimate_B23022_003 + work_status_high$estimate_B23022_027
+work_status_high$total_35more <- work_status_high$estimate_B23022_004 + work_status_high$estimate_B23022_028
+work_status_high$total_15to34 <- work_status_high$estimate_B23022_011 + work_status_high$estimate_B23022_035
+work_status_high$total_1to14 <- work_status_high$estimate_B23022_018 + work_status_high$estimate_B23022_042
+work_status_high$total_notworked <- work_status_high$estimate_B23022_025 + work_status_high$estimate_B23022_049
+
+work_status_low$total_pop <- work_status_low$estimate_B23022_002 + work_status_low$estimate_B23022_026
+work_status_low$total_worked <- work_status_low$estimate_B23022_003 + work_status_low$estimate_B23022_027
+work_status_low$total_35more <- work_status_low$estimate_B23022_004 + work_status_low$estimate_B23022_028
+work_status_low$total_15to34 <- work_status_low$estimate_B23022_011 + work_status_low$estimate_B23022_035
+work_status_low$total_1to14 <- work_status_low$estimate_B23022_018 + work_status_low$estimate_B23022_042
+work_status_low$total_notworked <- work_status_low$estimate_B23022_025 + work_status_low$estimate_B23022_049
 
 htotal_1to14=sum(work_status_high$total_1to14)
 htotal_15to34=sum(work_status_high$total_15to34)
@@ -74,7 +88,7 @@ totals <- left_join(totals_high,totals_low, by = "work_status")
 totals_high %>%
   filter(work_status!= "Worked" & work_status != "Total") %>%
   ggplot()+
-  geom_col(aes(x=work_status,y=prop,fill=work_status)) +
+  geom_col(aes(x=work_status,y=high_prop,fill=work_status)) +
   xlab("Work Status") + 
   ylab("Proportion of Population (ages 16-64)")+
   labs(title= "Work Status Proportions for Highest 10%\n(Worst) Spatial Mismatch in Seattle") +
@@ -87,7 +101,7 @@ totals_high %>%
 totals_low %>%
   filter(work_status!= "Worked" & work_status != "Total") %>%
   ggplot()+
-  geom_col(aes(x=work_status,y=prop,fill=work_status)) +
+  geom_col(aes(x=work_status,y=low_prop,fill=work_status)) +
   xlab("Work Status") + 
   ylab("Proportion of Population (ages 16-64)")+
   labs(title= "Work Status Proportions for Lowest 10%\n(Best) Spatial Mismatch in Seattle") +
@@ -99,7 +113,12 @@ totals_low %>%
 totals %>%
   pivot_longer(cols = c(low_prop,high_prop), names_to = "prop_type", values_to = "prop") %>%
   filter(work_status!= "Worked" & work_status != "Total") %>%
+  mutate(work_status = factor(work_status, 
+                    levels = c( "Not_Worked", "1to14_hours", "15to35_hours", "35more_hours"),
+                    labels = c("No Work", "1-14 Hours", "15-35 Hours", "35+ Hours"))) %>% 
   ggplot(aes(x=work_status,y=prop,fill=prop_type))+
+  # scale_x_discrete(breaks = c( "Not_Worked", "1to14_hours", "15to35_hours", "35more_hours"),
+  #                  labels = c("No Work", "1-14 Hours", "15-35 Hours", "35+ Hours")) +
   geom_col(position = position_dodge()) +
   xlab("Work Status") + 
   ylab("Proportion of Population (ages 16-64)")+
@@ -113,7 +132,7 @@ totals %>%
 
 
 
-
+### Move to a different file
 # load job_access_gap, but leave out the geometries
 job_access_gap <- read_csv("job_access_gap.csv", 
                            col_types = cols(geometry = col_skip()))

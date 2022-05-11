@@ -1,3 +1,4 @@
+### NOTE: THIS DATA NO LONGER IN USE!!!
 library(tidycensus)
 library(tidyverse)
 options(tigris_use_cache = TRUE)

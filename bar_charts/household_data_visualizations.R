@@ -4,32 +4,32 @@ options(tigris_use_cache = TRUE)
 
 #Correlation visualizations
 
-job_access_gap <- read_csv("job_access_gap.csv")
-
-sea_gap <- job_access_gap %>%
-  filter(MSA == "Seattle")
+# job_access_gap <- read_csv("job_access_gap.csv")
+# 
+# sea_gap <- job_access_gap %>%
+#   filter(MSA == "Seattle")
 
 #calculate how many are in 10% of data
-quantity<-round(.1*dim(sea_gap)[1])
-
-high<-sea_gap %>%
-  arrange(desc(spatialmismatch))%>%
-  head(quantity)
-
-low<-sea_gap %>%
-  arrange((spatialmismatch))%>%
-  head(quantity)
+# quantity<-round(.1*dim(sea_gap)[1])
+# 
+# high<-sea_gap %>%
+#   arrange(desc(spatialmismatch))%>%
+#   head(quantity)
+# 
+# low<-sea_gap %>%
+#   arrange((spatialmismatch))%>%
+#   head(quantity)
 
 #import big data CSV
 library(readr)
 #acs_dataset <- read_csv("acs_dataset.csv")
 
 #grab data
-occupancy_census <- all_acs_data %>%
+occupancy_census <- acs_dataset %>%
   select(GEOID,NAME,contains("B25014"))
 occupancy_census$GEOID <- as.numeric(occupancy_census$GEOID)
 
-household_size_census <- all_acs_data %>%
+household_size_census <- acs_dataset %>%
   select(GEOID,NAME,contains("B25009"))
 household_size_census$GEOID <- as.numeric(household_size_census$GEOID)
 
@@ -79,9 +79,9 @@ total_occup_high$high_prop<- total_occup_high$high_count / total_occup_high$high
 
 total_occup_low<-data.frame(occupancy = c(".5orless",".51to1","1.01to1.5","1.51to2","2.01ormore","Total"),
                             low_count = c(ltotal_.5orless, ltotal_.51to1, ltotal_1.01to1.5, ltotal_1.51to2, ltotal_2.01ormore, ltotal_pop))
-total_occup_low$low_prop<- total_low$low_count / total_low$low_count[6]
+total_occup_low$low_prop<- total_occup_low$low_count / total_occup_low$low_count[6]
 
-total_occup <- left_join(total_high,total_low, by = "occupancy")
+total_occup <- left_join(total_occup_high,total_occup_low, by = "occupancy")
 
 # Household size data
 htotal_size1=sum(household_size_high$size1)

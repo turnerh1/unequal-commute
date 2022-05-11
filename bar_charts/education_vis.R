@@ -1,26 +1,26 @@
 library(tidycensus)
 library(tidyverse)
 
-
-job_access_gap <- read_csv("job_access_gap.csv")
-
-sea_gap <- job_access_gap %>%
-  filter(MSA == "Seattle")
-
-#calculate how many are in 10% of data
-quantity<-round(.1*dim(sea_gap)[1])
-
-high<-sea_gap %>%
-  arrange(desc(spatialmismatch))%>%
-  head(quantity)
-
-low<-sea_gap %>%
-  arrange((spatialmismatch))%>%
-  head(quantity)
+# 
+# job_access_gap <- read_csv("job_access_gap.csv")
+# 
+# sea_gap <- job_access_gap %>%
+#   filter(MSA == "Seattle")
+# 
+# #calculate how many are in 10% of data
+# quantity<-round(.1*dim(sea_gap)[1])
+# 
+# high<-sea_gap %>%
+#   arrange(desc(spatialmismatch))%>%
+#   head(quantity)
+# 
+# low<-sea_gap %>%
+#   arrange((spatialmismatch))%>%
+#   head(quantity)
 
 #import big data CSV
 library(readr)
-acs_dataset <- read_csv("acs_dataset.csv")
+# acs_dataset <- read_csv("acs_dataset.csv")
 edu_census <- acs_dataset %>%
   select(GEOID,NAME,contains("B15003"))
 
@@ -39,9 +39,22 @@ edu_census <- edu_census %>%
            estimate_B15003_023, #master degree
            estimate_B15003_024, #professional school degree
            estimate_B15003_025)) #doctoral degree
-edu_census$somecollege = edu_census$estimate_B15003_019 + edu_census$estimate_B15003_020
-edu_census$higher_ed = edu_census$estimate_B15003_021 + edu_census$estimate_B15003_022 + edu_census$estimate_B15003_023 + edu_census$estimate_B15003_024 + edu_census$estimate_B15003_025
-edu_census$post_grad = edu_census$estimate_B15003_023 + edu_census$estimate_B15003_024 + edu_census$estimate_B15003_025
+
+#some college, <1 year AND  #some college >1 year, no degree
+edu_census$somecollege = edu_census$estimate_B15003_019 +
+                         edu_census$estimate_B15003_020 
+
+# associate, bachelor, master, professional school, doctorate
+edu_census$higher_ed = edu_census$estimate_B15003_021 + 
+                       edu_census$estimate_B15003_022 + 
+                       edu_census$estimate_B15003_023 + 
+                       edu_census$estimate_B15003_024 + 
+                       edu_census$estimate_B15003_025
+
+# master, professional, doctorate
+edu_census$post_grad = edu_census$estimate_B15003_023 + 
+                       edu_census$estimate_B15003_024 + 
+                       edu_census$estimate_B15003_025
 
 #join with edu_census data
 edu_high <- left_join(high, edu_census, by="GEOID")

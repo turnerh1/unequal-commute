@@ -1,6 +1,8 @@
 library(tidycensus)
 library(tidyverse)
 
+## no need to run this file before creating visualizations
+
 job_access_gap <- read_csv("./data/job_access_gap.csv")
 
 sea_gap <- job_access_gap %>%

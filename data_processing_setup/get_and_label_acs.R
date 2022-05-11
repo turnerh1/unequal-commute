@@ -2,7 +2,7 @@ library('plyr', include.only = 'join_all' )
 library(dplyr)
 # marital status (B12001) - count of people (15+ age) var: 'est_population_15+'
 # language (B16004)- number of people who speak per group (5+ age) var: 'estimate_age5andolder'
-# num of household earners (B19121) - number of earners per family var: 'est_num_families'
+# NO LONGER USED num of household earners (B19121) - number of earners per family var: 'est_num_families'
 # household data/occupancy char. (B25009, B25014) - Tenure by household size and tenure by occupancy
 # work status (B23022) - count of people (16+ age) var: 'est_population_16to64'
 # educational attainment (B15003) - (25+ age)

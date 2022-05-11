@@ -1,6 +1,4 @@
-# get job access and acs data from visualization_setup.R and get_and_label_acs.R
-
-options(tigris_use_cache = TRUE)
+# get job access and acs data from visualization_setup.R
 
 work_status_census <- acs_dataset %>%
   select(GEOID,NAME,contains("B23022"))
@@ -49,12 +47,14 @@ ltotal_notworked=sum(work_status_low$total_notworked)
 ltotal_pop=sum(work_status_low$total_pop)
 
 
-totals_high<-data.frame(work_status = c("1-14 hours","15-35 hours","35+ hours","Worked","Not Worked","Total"),
-                        high_count = c(htotal_1to14, htotal_15to34, htotal_35more, htotal_worked, htotal_notworked, htotal_pop))
+totals_high<-data.frame(work_status = factor( c("Not Worked", "1-14 hours","15-35 hours","35+ hours","Worked","Total"),
+                                              levels=c("Not Worked", "1-14 hours","15-35 hours","35+ hours","Worked","Total")),
+                        high_count = c(htotal_notworked, htotal_1to14, htotal_15to34, htotal_35more, htotal_worked, htotal_pop))
 totals_high$high_prop<- totals_high$high_count / totals_high$high_count[6]
 
-totals_low<-data.frame(work_status = c("1-14 hours","15-35 hours","35+ hours","Worked","Not Worked","Total"),
-                       low_count = c(ltotal_1to14, ltotal_15to34, ltotal_35more, ltotal_worked, ltotal_notworked, ltotal_pop))
+totals_low<-data.frame(work_status = factor( c("Not Worked","1-14 hours","15-35 hours","35+ hours","Worked","Total"),
+                                             levels=c("Not Worked", "1-14 hours","15-35 hours","35+ hours","Worked","Total")),
+                       low_count = c(ltotal_notworked, ltotal_1to14, ltotal_15to34, ltotal_35more, ltotal_worked, ltotal_pop))
 totals_low$low_prop<- totals_low$low_count / totals_low$low_count[6]
 
 totals <- left_join(totals_high,totals_low, by = "work_status")
@@ -62,9 +62,6 @@ totals <- left_join(totals_high,totals_low, by = "work_status")
 totals %>%
   pivot_longer(cols = c(low_prop,high_prop), names_to = "prop_type", values_to = "prop") %>%
   filter(work_status!= "Worked" & work_status != "Total") %>%
-  mutate(work_status = factor(work_status, 
-                    levels = c( "Not_Worked", "1to14_hours", "15to35_hours", "35more_hours"),
-                    labels = c("No Work", "1-14 Hours", "15-35 Hours", "35+ Hours"))) %>% 
   ggplot(aes(x=work_status,y=prop,fill=prop_type))+
   geom_col(position = position_dodge()) +
   xlab("Work Status") + 

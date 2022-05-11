@@ -1,30 +1,5 @@
-library(tidycensus)
-library(tidyverse)
-options(tigris_use_cache = TRUE)
+# get job access and acs data from visualization_setup.R
 
-#Correlation visualizations
-
-# job_access_gap <- read_csv("job_access_gap.csv")
-# 
-# sea_gap <- job_access_gap %>%
-#   filter(MSA == "Seattle")
-
-#calculate how many are in 10% of data
-# quantity<-round(.1*dim(sea_gap)[1])
-# 
-# high<-sea_gap %>%
-#   arrange(desc(spatialmismatch))%>%
-#   head(quantity)
-# 
-# low<-sea_gap %>%
-#   arrange((spatialmismatch))%>%
-#   head(quantity)
-
-#import big data CSV
-library(readr)
-#acs_dataset <- read_csv("acs_dataset.csv")
-
-#grab data
 occupancy_census <- acs_dataset %>%
   select(GEOID,NAME,contains("B25014"))
 occupancy_census$GEOID <- as.numeric(occupancy_census$GEOID)

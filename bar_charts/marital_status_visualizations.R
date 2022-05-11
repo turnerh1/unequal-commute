@@ -1,3 +1,5 @@
+# get job access and acs data from visualization_setup.R
+
 marital_census <- acs_dataset %>%
   select(GEOID,NAME,contains("B1200"))
 

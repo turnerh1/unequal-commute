@@ -39,6 +39,19 @@ edu_census$post_grad = edu_census$estimate_B15003_023 +
 edu_spatial <- left_join(job_access_gap, edu_census,by = "GEOID") %>%
   select(-geometry,-NAME)
 
+#create proportions
+edu_spatial$prop_noedu <- edu_spatial$estimate_B15003_002/edu_spatial$estimate_B15003_001
+edu_spatial$prop_nodiploma <- edu_spatial$estimate_B15003_016/edu_spatial$estimate_B15003_001
+edu_spatial$prop_hsdiploma <- edu_spatial$estimate_B15003_017/edu_spatial$estimate_B15003_001
+edu_spatial$prop_GED <- edu_spatial$estimate_B15003_018/edu_spatial$estimate_B15003_001
+edu_spatial$prop_lesssomecollege <- edu_spatial$estimate_B15003_019/edu_spatial$estimate_B15003_001
+edu_spatial$prop_moresomecollege <- edu_spatial$estimate_B15003_020/edu_spatial$estimate_B15003_001
+edu_spatial$prop_AA <- edu_spatial$estimate_B15003_021/edu_spatial$estimate_B15003_001
+edu_spatial$prop_BS <- edu_spatial$estimate_B15003_022/edu_spatial$estimate_B15003_001
+edu_spatial$prop_MD <- edu_spatial$estimate_B15003_023/edu_spatial$estimate_B15003_001
+edu_spatial$prop_pro <- edu_spatial$estimate_B15003_024/edu_spatial$estimate_B15003_001
+edu_spatial$prop_PhD <- edu_spatial$estimate_B15003_025/edu_spatial$estimate_B15003_001
+
 edu_spatial$prop_somecollege <- edu_spatial$somecollege/edu_spatial$estimate_B15003_001
 edu_spatial$prop_higher_ed <- edu_spatial$higher_ed/edu_spatial$estimate_B15003_001
 edu_spatial$prop_post_grad <- edu_spatial$post_grad/edu_spatial$estimate_B15003_001
@@ -46,12 +59,18 @@ edu_spatial$prop_post_grad <- edu_spatial$post_grad/edu_spatial$estimate_B15003_
 edu_spatial_cor <- edu_spatial%>%
   select(spatialmismatch,prop_somecollege,prop_higher_ed,prop_post_grad)
 
+m1 <- lm(spatialmismatch~prop_noedu+prop_nodiploma+prop_hsdiploma+prop_GED+prop_lesssomecollege+prop_moresomecollege+prop_AA+prop_BS+prop_MD+prop_pro+prop_PhD, data = edu_spatial)
+m2 <- lm(spatialmismatch~prop_BS+prop_MD+prop_pro+prop_PhD, data = edu_spatial)
+
+summary(m1)
+
 cor(edu_spatial_cor[,(1:4)])
 
 pairs(edu_spatial_cor[,(1:4)])
 plot(spatialmismatch~somecollege + higher_ed + post_grad, data = edu_spatial)
-m1 <- lm(spatialmismatch~somecollege + higher_ed + post_grad, data = edu_spatial)
-summary(m1)
+m3 <- lm(spatialmismatch~somecollege + higher_ed + post_grad, data = edu_spatial)
+
+summary(m3)
 
 plot(m1)
 

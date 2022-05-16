@@ -59,20 +59,22 @@ edu_spatial$prop_post_grad <- edu_spatial$post_grad/edu_spatial$estimate_B15003_
 edu_spatial_cor <- edu_spatial%>%
   select(spatialmismatch,prop_somecollege,prop_higher_ed,prop_post_grad)
 
-m1 <- lm(spatialmismatch~prop_noedu+prop_nodiploma+prop_hsdiploma+prop_GED+prop_lesssomecollege+prop_moresomecollege+prop_AA+prop_BS+prop_MD+prop_pro+prop_PhD, data = edu_spatial)
-m2 <- lm(spatialmismatch~prop_BS+prop_MD+prop_pro+prop_PhD, data = edu_spatial)
+#plotting all categories vs only upper
+m.all <- lm(spatialmismatch~prop_noedu+prop_nodiploma+prop_hsdiploma+prop_GED+prop_lesssomecollege+prop_moresomecollege+prop_AA+prop_BS+prop_MD+prop_pro+prop_PhD, data = edu_spatial)
+m.higher_edu <- lm(spatialmismatch~prop_BS+prop_MD+prop_pro+prop_PhD, data = edu_spatial)
 
-summary(m1)
+summary(m.all)
+summary(m.higher_edu)
+anova(m.all, m.higher_edu)
 
+# basic correlations
 cor(edu_spatial_cor[,(1:4)])
-
 pairs(edu_spatial_cor[,(1:4)])
-plot(spatialmismatch~somecollege + higher_ed + post_grad, data = edu_spatial)
-m3 <- lm(spatialmismatch~somecollege + higher_ed + post_grad, data = edu_spatial)
 
-summary(m3)
+# modeling categorized education levels (Best so far)
+m.cat <- lm(spatialmismatch~somecollege + higher_ed + post_grad, data = edu_spatial)
 
-plot(m1)
+summary(m.cat)
 
 plot(spatialmismatch~prop_higher_ed, data = edu_spatial)
 m.some_higher <- lm(spatialmismatch~prop_somecollege + prop_higher_ed + prop_somecollege*prop_higher_ed, data = edu_spatial)

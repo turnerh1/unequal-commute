@@ -34,10 +34,20 @@ english_ability_filled <- english_ability %>%
           english_well     = rowSums( language_census %>% select( english_well$varname ), na.rm=T ),
           english_notwell  = rowSums( language_census %>% select( english_notwell$varname ), na.rm=T ),
           english_notatall = rowSums( language_census %>% select( english_notatall$varname ), na.rm=T )) %>% 
+  mutate( english_only     = english_only / total,
+          english_verywell = english_verywell / total,
+          english_well     = english_well / total,
+          english_notwell  = english_notwell / total,
+          english_notatall = english_notatall / total ) %>% 
   left_join( job_access_gap %>% 
                filter(MSA=="Seattle") %>% 
                select( GEOID, spatialmismatch ) )
 
 correlations <- cor(english_ability_filled, use = "complete.obs")
-corrplot(correlations, type = "upper", order = "hclust", 
+
+#  Positive correlations are displayed in blue and negative correlations in red color. 
+# Color intensity and the size of the circle are proportional to the correlation coefficients. 
+# In the right side of the correlogram, the legend color shows the correlation 
+# coefficients and the corresponding colors.
+corrplot(correlations, order = "hclust", 
          tl.col = "black", tl.srt = 45)

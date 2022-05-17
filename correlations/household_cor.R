@@ -21,7 +21,9 @@ household_census$size7more <- (household_census$estimate_B25009_009 + household_
 
 #import job access data
 household_spatial <- left_join(job_access_gap, household_census,by = "GEOID")%>%
+  filter(MSA=="Seattle") %>%
   select(spatialmismatch, total_pop, contains("size"))
+#correlation scatterplots
 cor(household_spatial[,(1:9)])
 
 pairs(household_spatial[,(1:9)])
@@ -29,26 +31,19 @@ plot(spatialmismatch~size5, data = household_spatial)
 #m1 <- lm(spatialmismatch~size5, data = household_spatial)
 #summary(m1)
 
-#next steps: get average household size?
-summary(household_census$size1)
-summary(household_census$size2)
-summary(household_census$size3)
-summary(household_census$size4)
-summary(household_census$size5)
-summary(household_census$size6)
-summary(household_census$size7more)
-#note that size 5, 6, 7 are all small proportions on average
 
+#combine proportions
 household_census$size1or2 = household_census$size1 + household_census$size2
 household_census$size3or4 = household_census$size3 + household_census$size4
 household_census$size5more = household_census$size5 + household_census$size6 + household_census$size7more
 household_census <- household_census %>%
   select(-c("size1", "size2", "size3", "size4","size5", "size6", "size7more"))
 household_spatial <- left_join(job_access_gap, household_census,by = "GEOID")%>%
+  filter(MSA=="Seattle") %>%
   select(spatialmismatch, contains("size")) %>%
   drop_na()
 
-#lots of NA's ?
+#more specific correlation scatterplots
 
 household_correlations = cor(household_spatial[,(1:4)])
 
@@ -56,6 +51,11 @@ pairs(household_spatial[,(1:4)])
 plot(spatialmismatch~size1or2, data = household_spatial)
 plot(spatialmismatch~size3or4, data = household_spatial)
 plot(spatialmismatch~size5more, data = household_spatial)
+
+
+#corellogram
+
+correlations <- cor(household_spatial, use = "complete.obs")
 
 #  Positive correlations are displayed in blue and negative correlations in red color. 
 # Color intensity and the size of the circle are proportional to the correlation coefficients. 

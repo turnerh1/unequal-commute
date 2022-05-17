@@ -68,7 +68,15 @@ summary(m.higher_edu)
 anova(m.all, m.higher_edu)
 
 # basic correlations
-cor(edu_spatial_cor[,(1:4)])
+edu_correlation = cor(edu_spatial_cor[,(1:4)], use = "complete.obs")
+
+#  Positive correlations are displayed in blue and negative correlations in red color. 
+# Color intensity and the size of the circle are proportional to the correlation coefficients. 
+# In the right side of the correlogram, the legend color shows the correlation 
+# coefficients and the corresponding colors.
+corrplot(edu_correlation, order = "hclust", 
+         tl.col = "black", tl.srt = 45)
+
 pairs(edu_spatial_cor[,(1:4)])
 
 # modeling categorized education levels (Best so far)

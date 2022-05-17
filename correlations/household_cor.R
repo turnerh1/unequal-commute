@@ -50,11 +50,16 @@ household_spatial <- left_join(job_access_gap, household_census,by = "GEOID")%>%
 
 #lots of NA's ?
 
-cor(household_spatial[,(1:4)])
+household_correlations = cor(household_spatial[,(1:4)])
 
 pairs(household_spatial[,(1:4)])
 plot(spatialmismatch~size1or2, data = household_spatial)
 plot(spatialmismatch~size3or4, data = household_spatial)
 plot(spatialmismatch~size5more, data = household_spatial)
 
-
+#  Positive correlations are displayed in blue and negative correlations in red color. 
+# Color intensity and the size of the circle are proportional to the correlation coefficients. 
+# In the right side of the correlogram, the legend color shows the correlation 
+# coefficients and the corresponding colors.
+corrplot(household_correlations, order = "hclust", 
+         tl.col = "black", tl.srt = 45)

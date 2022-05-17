@@ -23,7 +23,7 @@ household_census$size7more <- (household_census$estimate_B25009_009 + household_
 household_spatial <- left_join(job_access_gap, household_census,by = "GEOID")%>%
   filter(MSA=="Seattle") %>%
   select(spatialmismatch, total_pop, contains("size"))
-
+#correlation scatterplots
 cor(household_spatial[,(1:9)])
 
 pairs(household_spatial[,(1:9)])
@@ -43,7 +43,7 @@ household_spatial <- left_join(job_access_gap, household_census,by = "GEOID")%>%
   select(spatialmismatch, contains("size")) %>%
   drop_na()
 
-#corellogram
+#more specific correlation scatterplots
 
 cor(household_spatial[,(1:4)])
 
@@ -51,6 +51,8 @@ pairs(household_spatial[,(1:4)])
 plot(spatialmismatch~size1or2, data = household_spatial)
 plot(spatialmismatch~size3or4, data = household_spatial)
 plot(spatialmismatch~size5more, data = household_spatial)
+
+#corellogram
 
 correlations <- cor(household_spatial, use = "complete.obs")
 

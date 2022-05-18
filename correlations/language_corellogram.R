@@ -41,7 +41,8 @@ english_ability_filled <- english_ability %>%
           english_notatall = english_notatall / total ) %>% 
   left_join( job_access_gap %>% 
                filter(MSA=="Seattle") %>% 
-               select( GEOID, spatialmismatch ) )
+               select( GEOID, spatialmismatch ) ) %>% 
+  select( -GEOID )
 
 correlations <- cor(english_ability_filled, use = "complete.obs")
 

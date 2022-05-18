@@ -29,6 +29,10 @@ get_and_label_acs_data <- function( prefix, columns, search_geo="block group", g
 fetch_year <- "2019"
 acs5_vars <- load_variables(year = fetch_year, dataset = "acs5", cache = TRUE)
 
+### Sex by age (population)
+sex_by_age <- get_and_label_acs_data( prefix="B01001", columns=1)
+sex_by_age_metadata <- sex_by_age[[1]]
+population <- sex_by_age[[2]]
 
 ### Marital Status: B12001
 marital_status <- get_and_label_acs_data( prefix="B12001", columns=19)

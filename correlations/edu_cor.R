@@ -1,6 +1,8 @@
 library(dplyr)
 library(openintro)
 library(corrplot)
+library(leaps)
+library(HH)
 
 acs_dataset <- read_csv("data/acs_dataset.csv")
 job_access_gap <- read_csv("data/job_access_gap.csv")
@@ -118,3 +120,42 @@ m.prop <- lm(spatialmismatch~prop_somecollege + prop_higher_ed + prop_post_grad,
 summary(m.prop)
 
 plot(m.prop)
+
+# model with all predictors
+m.all <- lm(spatialmismatch~prop_noedu+prop_nodiploma+prop_hsdiploma+prop_GED+prop_lesssomecollege+
+              prop_moresomecollege+prop_AA+prop_BS+prop_MD+prop_pro+prop_PhD, data = edu_spatial_prop)
+
+
+# backwards selection model
+MSE=(summary(m.all)$sigma)^2
+step(m.all, scale=MSE, direction="backward")
+
+m.back <- lm(formula = spatialmismatch ~ prop_GED + prop_lesssomecollege + 
+               prop_moresomecollege + prop_BS + prop_MD + prop_pro + prop_PhD, 
+             data = edu_spatial)
+summary(m.back)
+
+plot(m.back$resid~m.back$fitted)
+abline(0,0)
+
+# foward selection model
+m.none <- lm(spatialmismatch~1, data = edu_foward_select)
+(m.forward <- step(m.none, scope=list(upper=m.all), scale=MSE, direction="forward"))
+
+# stepwise regression model
+step(m.all, scope=list(upper=m.all), scale=MSE, direction="both")
+m.stepwise <- lm(formula = spatialmismatch ~ prop_GED + prop_lesssomecollege + 
+                   prop_moresomecollege + prop_BS + prop_MD + prop_pro + prop_PhD, 
+                 data = edu_spatial)
+summary(m.stepwise)
+
+# Best subsets model
+all <- regsubsets(spatialmismatch ~ prop_GED + prop_lesssomecollege + 
+                    prop_moresomecollege + prop_BS + prop_MD + prop_pro + prop_PhD, 
+                  data = edu_spatial)
+round(summary(all)$adjr2, 3)
+plot(all, scale="adjr2")
+
+# Lowest Cp model
+round(summary(all)$cp,2)
+plot(all, scale="Cp")

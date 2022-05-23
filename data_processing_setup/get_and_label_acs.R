@@ -34,6 +34,11 @@ sex_by_age <- get_and_label_acs_data( prefix="B01001", columns=1)
 sex_by_age_metadata <- sex_by_age[[1]]
 population <- sex_by_age[[2]]
 
+### race: B02001
+race <- get_and_label_acs_data( prefix="B02001", columns=10)
+race_metadata <- race[[1]]
+race_data <- race[[2]]
+
 ### Marital Status: B12001
 marital_status <- get_and_label_acs_data( prefix="B12001", columns=19)
 marital_status_metadata <- marital_status[[1]]

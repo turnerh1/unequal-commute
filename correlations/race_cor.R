@@ -33,7 +33,7 @@ race_spatial$other = race_spatial$other + race_spatial$nativeamerican
 
 # basic correlations
 race_spatial <- race_spatial %>%
-  select(spatialmismatch, white, black, aapi, other, multiple)
+  select(spatialmismatch, white, black, aapi, multiple,other)
 correlations <- cor(race_spatial, use = "complete.obs")
 
 
@@ -45,7 +45,7 @@ summary(m1)
 
 #correlogram
 
-corrplot(correlations, order = "hclust", 
+corrplot(correlations, order = "original", 
          tl.col = "black", tl.srt = 45)
 
 

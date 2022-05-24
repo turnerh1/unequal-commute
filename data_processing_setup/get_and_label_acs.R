@@ -83,7 +83,8 @@ acs_dataframes <- list(marital_status_data,
                        household_income_data,
                        tenure_data,
                        work_status_data,
-                       education_data)
+                       education_data,
+                       race_data)
 
 all_acs_data <- join_all( acs_dataframes, by="GEOID", type="full" )
 geography_data <-get_acs (geography = "block group", variables = "B19013_001", 

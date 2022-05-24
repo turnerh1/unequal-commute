@@ -1,11 +1,12 @@
 library(tidycensus)
-library(tidyr)
+library(tidyverse)
 library(openintro)
 library(corrplot)
 
 #load race data from 'get_and_label_acs.R'
 #note that race data is not yet in CSV ^ so use the function in the above file
-race_data$GEOID = as.numeric(race_data$GEOID)
+race_data <- acs_dataset %>%
+  select(GEOID,NAME,contains("B02001"))
 race_spatial <- left_join(job_access_gap, race_data,by = "GEOID")%>%
   filter(MSA=="Seattle") %>%
   select(spatialmismatch, contains("est"))%>%

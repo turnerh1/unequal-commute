@@ -103,12 +103,13 @@ corrplot(edu_correlation, order = "hclust",
 
 pairs(edu_spatial_cor[,(1:4)])
 
-# modeling categorized education levels (Best so far)
+# modeling categorized education levels (COUNTS)
 m.cat <- lm(spatialmismatch~somecollege + higher_ed + post_grad, data = edu_spatial)
 m.propcat <- lm(spatialmismatch~prop_somecollege + prop_higher_ed + prop_post_grad, data = edu_spatial)
 summary(m.propcat)
-
 plot(spatialmismatch~prop_higher_ed, data = edu_spatial)
+
+# modeling categorized education levels (PROP)
 m.some_higher <- lm(spatialmismatch~prop_somecollege + prop_higher_ed + prop_somecollege*prop_higher_ed, data = edu_spatial)
 m.some <- lm(spatialmismatch~prop_somecollege, data = edu_spatial)
 m.higher <- lm(spatialmismatch~prop_higher_ed, data = edu_spatial)
@@ -124,7 +125,7 @@ plot(m.prop)
 
 # model with all predictors
 m.all <- lm(spatialmismatch~prop_noedu+prop_nodiploma+prop_hsdiploma+prop_GED+prop_lesssomecollege+
-              prop_moresomecollege+prop_AA+prop_BS+prop_MD+prop_pro+prop_PhD, data = edu_spatial_prop)
+              prop_moresomecollege+prop_AA+prop_BS+prop_MD+prop_pro+prop_PhD, data = edu_spatial)
 
 
 # backwards selection model
@@ -138,7 +139,10 @@ summary(m.back)
 
 plot(m.back$resid~m.back$fitted)
 abline(0,0)
+plot(m.back)
 
+edu_foward_select <- edu_spatial %>%
+  select(7,25:40)
 # foward selection model
 m.none <- lm(spatialmismatch~1, data = edu_foward_select)
 (m.forward <- step(m.none, scope=list(upper=m.all), scale=MSE, direction="forward"))
@@ -150,6 +154,7 @@ m.stepwise <- lm(formula = spatialmismatch ~ prop_GED + prop_lesssomecollege +
                  data = edu_spatial)
 summary(m.stepwise)
 
+anova(m.stepwise, m.back)
 # Best subsets model
 all <- regsubsets(spatialmismatch ~ prop_GED + prop_lesssomecollege + 
                     prop_moresomecollege + prop_BS + prop_MD + prop_pro + prop_PhD, 
@@ -160,3 +165,10 @@ plot(all, scale="adjr2")
 # Lowest Cp model
 round(summary(all)$cp,2)
 plot(all, scale="Cp")
+
+best_indiv_edu <- lm(formula = spatialmismatch ~ prop_BS + prop_MD + prop_pro + prop_PhD, 
+                 data = edu_spatial)
+summary(best_indiv_edu)
+
+plot(best_indiv_edu)
+

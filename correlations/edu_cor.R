@@ -3,6 +3,7 @@ library(openintro)
 library(corrplot)
 library(leaps)
 library(HH)
+library(readr)
 
 acs_dataset <- read_csv("data/acs_dataset.csv")
 job_access_gap <- read_csv("data/job_access_gap.csv")

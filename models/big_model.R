@@ -1,7 +1,8 @@
 library(tidyverse)
 library(readr)
-job_access_gap <- read_csv("job_access_gap.csv")
-acs_dataset <- read_csv("acs_dataset.csv")
+job_access_gap <- read_csv("data/job_access_gap.csv")
+acs_dataset <- read_csv("data/acs_dataset.csv")
+english_speaking_ability <- read_csv("data/english_speaking_ability.csv")
 
 model_data <- left_join(job_access_gap,acs_dataset, by = "GEOID") %>%
   filter(MSA == "Seattle")
@@ -9,9 +10,6 @@ model_data <- left_join(job_access_gap,acs_dataset, by = "GEOID") %>%
 
 #languages
 model_data$spanish = (model_data$estimate_B16004_004 + model_data$estimate_B16004_026 + model_data$estimate_B16004_048) / model_data$estimate_B16004_001
-#english_well vs english not well
-# KAITE EDIT HERE
-
 
 #income
 model_data$median_household_income <-model_data$estimate_B19013_001
@@ -49,7 +47,12 @@ model_data$nonwhite = model_data$black + model_data$aapi + model_data$other + mo
 model_data <- model_data %>%
   select(GEOID, spatialmismatch, spanish, median_household_income, below_bach, above_bach, white, nonwhite)
 
+#english_well vs english not well
+english_speaking_ability <- english_speaking_ability %>% select( GEOID, english_better)
+model_data <- left_join( model_data, english_speaking_ability, by="GEOID" )
+
 #pull in population
-pop_density <- read_csv("land_area/pop_density.csv")
+pop_density <- read_csv("data/land_area/pop_density.csv")
 model_data <- left_join(model_data, pop_density, by = "GEOID") %>%
-  select(spatialmismatch, spanish, median_household_income, below_bach, above_bach, white, nonwhite, people_per_sqmi)
+  select(GEOID, spatialmismatch, spanish, median_household_income, below_bach, above_bach, white, nonwhite, people_per_sqmi, english_better)
+

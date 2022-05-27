@@ -46,6 +46,9 @@ english_ability_filled <- english_ability %>%
   left_join( job_access_gap %>% 
                filter(MSA=="Seattle") %>% 
                select( GEOID, spatialmismatch ) ) 
+
+write_csv( english_ability_filled, "./data/english_speaking_ability.csv")
+
 # %>% 
 #   select( -GEOID )
 

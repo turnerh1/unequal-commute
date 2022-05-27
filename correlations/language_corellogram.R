@@ -34,15 +34,20 @@ english_ability_filled <- english_ability %>%
           english_well     = rowSums( language_census %>% select( english_well$varname ), na.rm=T ),
           english_notwell  = rowSums( language_census %>% select( english_notwell$varname ), na.rm=T ),
           english_notatall = rowSums( language_census %>% select( english_notatall$varname ), na.rm=T )) %>% 
+  mutate( english_better = english_only + english_verywell +english_well,
+          english_worse = english_notwell + english_notatall ) %>% 
   mutate( english_only     = english_only / total,
           english_verywell = english_verywell / total,
           english_well     = english_well / total,
           english_notwell  = english_notwell / total,
-          english_notatall = english_notatall / total ) %>% 
+          english_notatall = english_notatall / total,
+          english_better = english_better / total,
+          english_worse = english_worse / total) %>% 
   left_join( job_access_gap %>% 
                filter(MSA=="Seattle") %>% 
-               select( GEOID, spatialmismatch ) ) %>% 
-  select( -GEOID )
+               select( GEOID, spatialmismatch ) ) 
+# %>% 
+#   select( -GEOID )
 
 correlations <- cor(english_ability_filled, use = "complete.obs")
 

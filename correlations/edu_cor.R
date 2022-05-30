@@ -123,42 +123,55 @@ summary(m.prop)
 
 plot(m.prop)
 
+#spatial and props only
+edu_select <- edu_spatial %>%
+  select(7,25:40)
+
 # model with all predictors
 m.all <- lm(spatialmismatch~prop_noedu+prop_nodiploma+prop_hsdiploma+prop_GED+prop_lesssomecollege+
-              prop_moresomecollege+prop_AA+prop_BS+prop_MD+prop_pro+prop_PhD, data = edu_spatial)
+              prop_moresomecollege+prop_AA+prop_BS+prop_MD+prop_pro+prop_PhD + prop_somecollege + prop_higher_ed
+            + prop_post_grad + prop_below_bach + prop_above_bach, data = edu_select)
 
 
-# backwards selection model
+# backwards selection model, r^2 = 0.1531
 MSE=(summary(m.all)$sigma)^2
 step(m.all, scale=MSE, direction="backward")
 
 m.back <- lm(formula = spatialmismatch ~ prop_GED + prop_lesssomecollege + 
                prop_moresomecollege + prop_BS + prop_MD + prop_pro + prop_PhD, 
-             data = edu_spatial)
+             data = edu_select)
 summary(m.back)
 
 plot(m.back$resid~m.back$fitted)
 abline(0,0)
 plot(m.back)
 
-edu_foward_select <- edu_spatial %>%
-  select(7,25:40)
-# foward selection model
-m.none <- lm(spatialmismatch~1, data = edu_foward_select)
-(m.forward <- step(m.none, scope=list(upper=m.all), scale=MSE, direction="forward"))
+#omit na's so that foward selection can occur
+edu_select <- na.omit(edu_select)
+
+# forward selection model, r^2 = 0.1535 and smaller AIC
+m.none <- lm(spatialmismatch~1, data = edu_select)
+step(m.none, scope=list(upper=m.all), scale=MSE, direction="forward")
+
+m.forward <- lm(formula = spatialmismatch ~ prop_above_bach + prop_PhD + prop_pro + 
+                  prop_lesssomecollege + prop_AA + prop_noedu + prop_hsdiploma, 
+                data = edu_select)
+
+summary(m.forward)
 
 # stepwise regression model
 step(m.all, scope=list(upper=m.all), scale=MSE, direction="both")
 m.stepwise <- lm(formula = spatialmismatch ~ prop_GED + prop_lesssomecollege + 
                    prop_moresomecollege + prop_BS + prop_MD + prop_pro + prop_PhD, 
-                 data = edu_spatial)
+                 data = edu_select)
 summary(m.stepwise)
 
-anova(m.stepwise, m.back)
+anova(m.stepwise, m.forward)
+
 # Best subsets model
-all <- regsubsets(spatialmismatch ~ prop_GED + prop_lesssomecollege + 
-                    prop_moresomecollege + prop_BS + prop_MD + prop_pro + prop_PhD, 
-                  data = edu_spatial)
+all <- regsubsets(spatialmismatch~prop_noedu+prop_nodiploma+prop_hsdiploma+prop_GED+prop_lesssomecollege+
+                    prop_moresomecollege+prop_AA+prop_BS+prop_MD+prop_pro+prop_PhD + prop_somecollege + prop_higher_ed
+                  + prop_post_grad + prop_below_bach + prop_above_bach, data = edu_select)
 round(summary(all)$adjr2, 3)
 plot(all, scale="adjr2")
 
@@ -172,3 +185,8 @@ summary(best_indiv_edu)
 
 plot(best_indiv_edu)
 
+# adding in interaction variable
+
+m.edu_final <- lm(formula = spatialmismatch ~ prop_above_bach + prop_PhD + prop_above_bach * 
+                    prop_below_bach, data = edu_select)
+summary(m.edu_final)

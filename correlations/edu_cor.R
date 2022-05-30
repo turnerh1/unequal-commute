@@ -2,7 +2,7 @@ library(dplyr)
 library(openintro)
 library(corrplot)
 library(leaps)
-library(HH)
+library(HH) #HH is incompatible with contains function
 library(readr)
 
 acs_dataset <- read_csv("data/acs_dataset.csv")

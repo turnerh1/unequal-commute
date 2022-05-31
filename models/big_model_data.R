@@ -22,6 +22,8 @@ model_data$below_bach <- (model_data$estimate_B15003_002 + model_data$estimate_B
   model_data$estimate_B15003_021) / model_data$estimate_B15003_001
 model_data$above_bach <- (model_data$estimate_B15003_022 + model_data$estimate_B15003_023 + model_data$estimate_B15003_024 +
   model_data$estimate_B15003_025) / model_data$estimate_B15003_001
+model_data$phd <- model_data$estimate_B15003_025/model_data$estimate_B15003_001
+model_data$bach_interact <- model_data$below_bach*model_data$above_bach
 
 #racial identity
 #totals are for one race only unless specified elsewhere
@@ -45,7 +47,7 @@ model_data$nonwhite = model_data$black + model_data$aapi + model_data$other + mo
 
 #select only necessary variables
 model_data <- model_data %>%
-  select(GEOID, spatialmismatch, spanish, median_household_income, below_bach, above_bach, white, nonwhite)
+  select(GEOID, spatialmismatch, spanish, median_household_income, below_bach, above_bach, phd, bach_interact ,white, nonwhite)
 
 #english_well vs english not well
 english_speaking_ability <- english_speaking_ability %>% select( GEOID, english_better)
@@ -54,5 +56,5 @@ model_data <- left_join( model_data, english_speaking_ability, by="GEOID" )
 #pull in population
 pop_density <- read_csv("data/land_area/pop_density.csv")
 model_data <- left_join(model_data, pop_density, by = "GEOID") %>%
-  select(GEOID, spatialmismatch, spanish, median_household_income, below_bach, above_bach, white, nonwhite, people_per_sqmi, english_better)
+  select(GEOID, spatialmismatch, spanish, median_household_income, below_bach, above_bach, bach_interact, phd, white, nonwhite, people_per_sqmi, english_better)
 

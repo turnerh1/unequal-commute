@@ -10,7 +10,8 @@ library(tidyr)
 # work status (B23022) - count of people (16+ age) var: 'est_population_16to64'
 # educational attainment (B15003) - (25+ age)
 
-### this function needs acs5_vars to be defined
+### this function needs acs5_vars to be defined in the environment
+### acs5_vars defined in this script
 get_and_label_acs_data <- function( prefix, columns, search_geo="block group", get_sf=F )
 {
   codes <- str_c( prefix, str_pad( c(1:columns), 3, pad="0" ), sep="_")
@@ -19,22 +20,24 @@ get_and_label_acs_data <- function( prefix, columns, search_geo="block group", g
     mutate( label = str_remove(label, "Estimate!!Total:") ) %>% 
     select( -"concept")
   
-  data_table <- as.data.frame( get_acs(geography = search_geo, variables = metadata_table$code, state = "WA", geometry = get_sf) %>% 
+  data_table <- as.data.frame( get_acs(geography = search_geo, 
+                                       variables = metadata_table$code, 
+                                       state = "WA", 
+                                       geometry = get_sf) %>% 
     pivot_wider(names_from = variable, values_from = c(estimate,moe)) )
   
-  # print( typeof( data_table ) )
   return( list( metadata_table, data_table ) )
 }
 
 fetch_year <- "2019"
 acs5_vars <- load_variables(year = fetch_year, dataset = "acs5", cache = TRUE)
 
-### Sex by age (population)
+### Sex by age (population): B01001
 sex_by_age <- get_and_label_acs_data( prefix="B01001", columns=1)
 sex_by_age_metadata <- sex_by_age[[1]]
 population <- sex_by_age[[2]]
 
-### race: B02001
+### Race: B02001
 race <- get_and_label_acs_data( prefix="B02001", columns=10)
 race_metadata <- race[[1]]
 race_data <- race[[2]]

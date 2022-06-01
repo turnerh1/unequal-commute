@@ -1,3 +1,5 @@
+library(readr)
+model_data <- read_csv("models/model_data.csv")
 model_data_na <- na.omit(model_data)
 
 summary(model_data_na$spatialmismatch)

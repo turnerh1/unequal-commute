@@ -1,3 +1,5 @@
+library(readr)
+model_data <- read_csv("models/model_data.csv")
 m.all <- lm(spatialmismatch~ spanish + median_household_income + below_bach + above_bach + bach_interact + phd + white + nonwhite 
             + people_per_sqmi + english_better, data = model_data)
 

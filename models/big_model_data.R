@@ -57,4 +57,4 @@ model_data <- left_join( model_data, english_speaking_ability, by="GEOID" )
 pop_density <- read_csv("data/land_area/pop_density.csv")
 model_data <- left_join(model_data, pop_density, by = "GEOID") %>%
   select(GEOID, spatialmismatch, spanish, median_household_income, below_bach, above_bach, bach_interact, phd, white, nonwhite, people_per_sqmi, english_better)
-
+write_csv(model_data, "./models/model_data.csv")

@@ -5,7 +5,7 @@ boxplot(model_data_na$spatialmismatch)
 
 #cut off at 3rd quartile (.1)
 cat_data <- model_data_na %>%
-  mutate(high = spatialmismatch>.1)
+  mutate(high = spatialmismatch>0.07225)
 
 cat_data$high <- as.numeric(cat_data$high)
 

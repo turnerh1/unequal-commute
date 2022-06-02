@@ -2,7 +2,7 @@ library(dplyr)
 library(openintro)
 library(corrplot)
 library(leaps)
-library(HH) #HH is incompatible with contains function
+#library(HH) #HH is incompatible with contains function
 library(readr)
 
 acs_dataset <- read_csv("data/acs_dataset.csv")
@@ -124,6 +124,7 @@ summary(m.prop)
 plot(m.prop)
 
 #spatial and props only
+#sometimes have to run this twice
 edu_select <- edu_spatial %>%
   select(7,25:40)
 
@@ -147,6 +148,7 @@ abline(0,0)
 plot(m.back)
 
 #omit na's so that foward selection can occur
+#may need to run this twice if selection does not work
 edu_select <- na.omit(edu_select)
 
 # forward selection model, r^2 = 0.1535 and smaller AIC

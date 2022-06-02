@@ -2,6 +2,7 @@ library(tidycensus)
 library(tidyverse)
 library(openintro)
 library(corrplot)
+library(readr)
 
 job_access_gap <- read_csv("data/job_access_gap.csv")
 acs_dataset <- read_csv("data/acs_dataset.csv")

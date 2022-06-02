@@ -4,7 +4,7 @@ library(corrplot)
 library(tidyverse)
 library(readr)
 
-# get job access and acs data from folder
+# get job access and acs data 
 job_access_gap <- read_csv("data/job_access_gap.csv")
 acs_dataset <- read_csv("data/acs_dataset.csv")
 

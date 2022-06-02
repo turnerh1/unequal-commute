@@ -2,6 +2,7 @@ library(tidycensus)
 library(tidyverse)
 library(openintro)
 library(corrplot)
+library(readr)
 
 pop_density <- read_csv("data/land_area/pop_density.csv")
 job_access_gap <- read_csv("data/job_access_gap.csv")

@@ -1,5 +1,12 @@
 ## run the visualization setup first
+library(dplyr)
+library(openintro)
 library(corrplot)
+library(readr)
+
+# get job access and acs data 
+job_access_gap <- read_csv("data/job_access_gap.csv")
+acs_dataset <- read_csv("data/acs_dataset.csv")
 
 ### get the variables for each category we're interested in
 language_dict <- read_csv("./data/dictionaries/language_metadata.csv")
@@ -47,7 +54,7 @@ english_ability_filled <- english_ability %>%
                filter(MSA=="Seattle") %>% 
                select( GEOID, spatialmismatch ) ) 
 
-write_csv( english_ability_filled, "./data/english_speaking_ability.csv")
+#write_csv( english_ability_filled, "./data/english_speaking_ability.csv")
 
 # %>% 
 #   select( -GEOID )

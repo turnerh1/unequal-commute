@@ -3,8 +3,8 @@ library(tidyverse)
 library(openintro)
 library(corrplot)
 
-pop_density <- read_csv("land_area/pop_density.csv")
-job_access_gap <- read_csv("job_access_gap.csv")
+pop_density <- read_csv("data/land_area/pop_density.csv")
+job_access_gap <- read_csv("data/job_access_gap.csv")
 pop_spatial <- left_join(job_access_gap, pop_density,by = "GEOID")%>%
   filter(MSA=="Seattle") %>%
   select(spatialmismatch, people_per_sqmi)%>%

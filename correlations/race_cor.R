@@ -2,9 +2,10 @@ library(tidycensus)
 library(tidyverse)
 library(openintro)
 library(corrplot)
+library(readr)
 
-#load race data from 'get_and_label_acs.R'
-#note that race data is not yet in CSV ^ so use the function in the above file
+job_access_gap <- read_csv("data/job_access_gap.csv")
+acs_dataset <- read_csv("data/acs_dataset.csv")
 race_data <- acs_dataset %>%
   select(GEOID,NAME,contains("B02001"))
 race_spatial <- left_join(job_access_gap, race_data,by = "GEOID")%>%

@@ -1,14 +1,17 @@
+library(readr)
+model_data <- read_csv("models/model_data.csv")
 model_data_na <- na.omit(model_data)
 
 summary(model_data_na$spatialmismatch)
 boxplot(model_data_na$spatialmismatch)
 
-#cut off at 3rd quartile (.1)
+#cut off at mean
 cat_data <- model_data_na %>%
   mutate(high = spatialmismatch>0.07225)
 
 cat_data$high <- as.numeric(cat_data$high)
 
+#plots will contain warnings but it's just for initial observations and not final model 
 plot(jitter(high,amount=.05) ~ spanish, data = cat_data, family = "binomial")
 plot(jitter(high,amount=.05) ~ median_household_income, data = cat_data, family = "binomial")
 plot(jitter(high,amount=.05) ~ above_bach, data = cat_data, family = "binomial")
@@ -33,5 +36,8 @@ Gdf = m2$df.residual - m1$df.residual
 pchisq(G, df = Gdf, lower.tail = F)
 
 addmargins(table(cat_data$high, as.numeric(m2$fitted.values >= .5)))
-1872/2441
-#model correctly categorizes 76.69% of data?
+
+#percent correctly classified
+(addmargins(table(cat_data$high, as.numeric(m2$fitted.values >= .5)))[1,1] + 
+  addmargins(table(cat_data$high, as.numeric(m2$fitted.values >= .5)))[2,2])/
+  addmargins(table(cat_data$high, as.numeric(m2$fitted.values >= .5)))[3,3]

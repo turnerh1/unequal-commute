@@ -2,10 +2,12 @@ library(dplyr)
 library(openintro)
 library(corrplot)
 library(tidyverse)
+library(readr)
 #population - num of households
-#could calculate prop of renter & owner occupied
 
-#import census data
+# get job access and acs data 
+job_access_gap <- read_csv("data/job_access_gap.csv")
+acs_dataset <- read_csv("data/acs_dataset.csv")
 household_census <- acs_dataset %>%
   select(GEOID,NAME,contains("B25009"))
 

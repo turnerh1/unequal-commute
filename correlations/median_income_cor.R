@@ -2,7 +2,11 @@ library(tidycensus)
 library(tidyverse)
 library(openintro)
 library(corrplot)
+library(readr)
 
+# get job access and acs data 
+job_access_gap <- read_csv("data/job_access_gap.csv")
+acs_dataset <- read_csv("data/acs_dataset.csv")
 #load acs_dataset
 household_income_data <- acs_dataset %>%
   select(GEOID,NAME,contains("B19013"))
@@ -28,3 +32,4 @@ summary(m1)
 
 corrplot(correlations, order = "hclust", 
          tl.col = "black", tl.srt = 90)
+

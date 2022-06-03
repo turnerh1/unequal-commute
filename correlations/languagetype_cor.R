@@ -1,7 +1,11 @@
 library(dplyr)
 library(openintro)
 library(corrplot)
-#load acs data
+library(readr)
+
+# get job access and acs data 
+job_access_gap <- read_csv("data/job_access_gap.csv")
+acs_dataset <- read_csv("data/acs_dataset.csv")
 
 language_census <- acs_dataset %>%
   select(GEOID,NAME,contains("B16004"))

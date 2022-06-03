@@ -3,6 +3,7 @@ library(dplyr)
 library(stringr)
 library(tidycensus)
 library(tidyr)
+library(readr)
 # marital status (B12001) - count of people (15+ age) var: 'est_population_15+'
 # language (B16004)- number of people who speak per group (5+ age) var: 'estimate_age5andolder'
 # NO LONGER USED num of household earners (B19121) - number of earners per family var: 'est_num_families'

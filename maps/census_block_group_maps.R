@@ -1,10 +1,11 @@
 # Install tigris and rtidycensus packages
 
 library(tidycensus)
+library(readr)
 library(tidyverse)
 
 # load your data, but leave out the geometries
-job_access_gap <- read_csv("job_access_gap.csv", 
+job_access_gap <- read_csv("data/job_access_gap.csv", 
                            col_types = cols(geometry = col_skip()))
 
 options(tigris_use_cache = TRUE)

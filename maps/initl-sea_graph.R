@@ -2,6 +2,7 @@ library(tidyverse)
 library(geojsonsf)
 library(broom)
 library(sf)
+library(readr)
 
 job_access_gap_sf <- geojson_sf( "https://urban-data-catalog.s3.amazonaws.com/drupal-root-live/2021/04/15/job_access_gap.geojson" )
 

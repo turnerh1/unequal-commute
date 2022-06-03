@@ -1,5 +1,6 @@
 library(tidycensus)
 library(tidyverse)
+library(readr)
 
 ## no need to run this file before creating visualizations
 
@@ -21,16 +22,16 @@ low<-sea_gap %>%
   head(quantity)
 
 #import big data CSV
-library(readr)
+
 acs_dataset <- read_csv("./data/acs_dataset.csv")
 # View(acs_dataset)
 
 #select the columns you want
 
-all_acs_data$GEOID <- as.integer( all_acs_data$GEOID )
+acs_dataset$GEOID <- as.integer( acs_dataset$GEOID )
 ### joining is N O T working
-high_with_acs <- left_join( high, all_acs_data, by="GEOID" )
+high_with_acs <- left_join( high, acs_dataset, by="GEOID" )
 
-anti_high_with_acs <- anti_join( high, all_acs_data, by="GEOID" )
+anti_high_with_acs <- anti_join( high, acs_dataset, by="GEOID" )
 
 

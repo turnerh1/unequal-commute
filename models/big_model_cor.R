@@ -17,6 +17,7 @@ abline(0,0)
 plot(m.back)
 
 #omit na's so that foward selection can occur, removed 42 rows
+#this assignment must be run twice in order to create model_data_na
 model_data_na <- na.omit(model_data)
 
 # forward selection model, r^2 = 0.1644, 6 predictors
@@ -51,3 +52,4 @@ best_indiv_edu <- lm(formula = spatialmismatch ~ above_bach + bach_interact + wh
 summary(best_indiv_edu)
 
 plot(best_indiv_edu)
+

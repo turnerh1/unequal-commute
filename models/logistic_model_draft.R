@@ -5,7 +5,7 @@ model_data_na <- na.omit(model_data)
 summary(model_data_na$spatialmismatch)
 boxplot(model_data_na$spatialmismatch)
 
-#cut off at 3rd quartile (.1)
+#cut off at mean
 cat_data <- model_data_na %>%
   mutate(high = spatialmismatch>0.07225)
 
@@ -36,6 +36,8 @@ Gdf = m2$df.residual - m1$df.residual
 pchisq(G, df = Gdf, lower.tail = F)
 
 addmargins(table(cat_data$high, as.numeric(m2$fitted.values >= .5)))
+
+#percent correctly classified
 (addmargins(table(cat_data$high, as.numeric(m2$fitted.values >= .5)))[1,1] + 
   addmargins(table(cat_data$high, as.numeric(m2$fitted.values >= .5)))[2,2])/
   addmargins(table(cat_data$high, as.numeric(m2$fitted.values >= .5)))[3,3]

@@ -10,7 +10,7 @@ The Urban Institute also published a [study](https://www.urban.org/features/uneq
 Our goal was to identify social factors that can predict spatial mismatch in Seattle. Such factors included marital status, language spoken at home, number of household earners, work status, household size, racial identity, population density (of a census block group), and median household income.
 
 ## Data Overview
-All the data we referenced for this project can be found in the [`/data`](/data) directory, along with a more complete description of individual datasets. Additionally, our [`/glossary`](https://github.com/turnerh1/unequal-commute/wiki/Glossary) contains definitions relevant to the study.
+All the data we referenced for this project can be found in the [`/data`](/data) directory, along with a more complete description of individual datasets. Additionally, our [glossary](https://github.com/turnerh1/unequal-commute/wiki/Glossary) contains definitions relevant to the study.
 The Urban Institute data focuses on job availability and accessibility in Seattle, Nashville, Baltimore, and Lansing. The unit of measurement
 is a census [block group](https://www.census.gov/programs-surveys/geography/about/glossary.html#par_textimage_4). The statistics
 we are working with measure things like the ratio of available jobs to available workers; the number of low-wage workers;

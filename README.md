@@ -16,10 +16,12 @@ is a census [block group](https://www.census.gov/programs-surveys/geography/abou
 we are working with measure things like the ratio of available jobs to available workers; the number of low-wage workers;
 and how many jobs are accessible by public transportation, as well as racial and ethnic data.
 The data was collected prior to the COVID-19 pandemic.  
-We also used data from the American Community Survey (ACS) and other population density data from the year 2019.
+We also used data from the American Community Survey (ACS) and population density data from the year 2019.
 
 
 ## Data Collection and Analyzation
+We used the spatial mismatch data from the Urban Institute commute study. The dataset from this study was already clean and easy to use; it was at the census block group level, so we decided to use this geography for our research as well. For the ACS data, we used the [tidycensus]() R package and API as well as other documentation and resources listed in our [ACS resources](/wiki/ACS-resources) wiki page. We needed to know the table number for the data category we wanted and how many columns were in the dataset, e.g. B16004 and 67 columns for data on language spoken at home. We used variable summary lists from the ACS api and information from [this](https://data.census.gov/cedsci/table) site for searching the ACS tables for particular data. We had difficulty finding population density data directly from the ACS, so we used the [Geocorr app](https://mcdc.missouri.edu/applications/geocorr.html) provided by the Missouri Census Data Center to find population density data for the Seattle area.  
+We knew we wanted to look at factors that predicted spatial mismatch, but did not initially have a clear idea of what variables to focus on. We created an initial list from the available ACS data based on our intuition, and then refined and expanded it based on visualizations that we created. We realized several variables had very little correlation, so we dropped them, but added others along the way such as the population density data and household income.
 
 ## Data Visualization and Modeling
 We created [`bar_charts`](/bar_charts) on our variables of interest to compare differences between high and low spatial mismatch areas. We then used correlograms to assess [`correlations`](/correlations) between the variables and spatial mismatch. Finally, we created

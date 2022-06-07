@@ -31,4 +31,7 @@ From our bar charts, we discovered that low spatial mismatch areas had a higher 
 
 In analyzing correlograms, we decided to drop the variables marital status and hours worked from our predictor models as they did not correlate with spatial mismatch. Further, we discovered from our correlograms that the best standalone predictor of spatial mismatch was level of education.
 
-INSERT CONCLUSIONS ABOUT MODELING
+Our best model of high spatial mismatch included predictors such as median household income, various higher education proportions, and proportion of white individuals.
+
+Our findings make sense, as inner city neighborhoods are experiencing an influx of wealthier, educated workers taking up traditionally low-income housing. 
+The proportion of white individuals can indicate how racially diverse particular census block groups are. As the original study found, there are significant racial group differences in higher areas of spatial mismatch.

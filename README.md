@@ -6,6 +6,8 @@ _Authors: Haylie Turner [@turnerh1](https://github.com/turnerh1), Jobi Lo [@jobi
 Our primary dataset about job accessibility was originally published by the Urban Institute, and can be found [here](https://datacatalog.urban.org/dataset/unequal-commute-data).
 The Urban Institute also published a [study](https://www.urban.org/features/unequal-commute) about unequal commutes that uses this data. Their study was a source of inspiration for our project.
 
+We concluded this project with a [presentation](https://docs.google.com/presentation/d/1BH90-KM4rPl0Y5RB_8D0WwFNbe6IznuQfzgO8-h2BXc/edit?usp=sharing) for our class and other members of the university.
+
 ## Goals and Research Motivation
 Our goal was to identify social factors that can predict spatial mismatch in Seattle. [Wikipedia](https://en.wikipedia.org/wiki/Spatial_mismatch#:~:text=Spatial%20mismatch%20is%20the%20mismatch,reside%20and%20suitable%20job%20opportunities) defines spatial mismatch as “the mismatch between where low-income households reside and suitable job opportunities.” Such factors included marital status, language spoken at home, number of household earners, work status, household size, racial identity, population density (of a census block group), and median household income.
 

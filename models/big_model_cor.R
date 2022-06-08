@@ -3,7 +3,7 @@ model_data <- read_csv("models/model_data.csv")
 m.all <- lm(spatialmismatch~ spanish + median_household_income + below_bach + above_bach + bach_interact + phd + white + nonwhite 
             + people_per_sqmi + english_better, data = model_data)
 
-# backwards selection model, r^2 = 0.165, 7 predictors
+# backwards selection model, radj^2 = 0.165, 7 predictors
 MSE=(summary(m.all)$sigma)^2
 step(m.all, scale=MSE, direction="backward")
 
@@ -20,7 +20,7 @@ plot(m.back)
 #this assignment must be run twice in order to create model_data_na
 model_data_na <- na.omit(model_data)
 
-# forward selection model, r^2 = 0.1644, 6 predictors
+# forward selection model, radj^2 = 0.1644, 6 predictors
 m.none <- lm(spatialmismatch~1, data = model_data_na)
 step(m.none, scope=list(upper=m.all), scale=MSE, direction="forward")
 
